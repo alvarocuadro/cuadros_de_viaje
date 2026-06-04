@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(find \"c:\\\\Users\\\\babom\" -name \"CLAUDE.md\" 2>/dev/null | head -10)",
+      "Read(//c/Users/babom/**)",
+      "Bash(mkdir -p \"c:\\\\Users\\\\babom\\\\OneDrive\\\\Documents\\\\GitHub\\\\cuadros_de_viaje\\\\.claude\\\\commands\" \"c:\\\\Users\\\\babom\\\\OneDrive\\\\Documents\\\\GitHub\\\\cuadros_de_viaje\\\\docs\")",
+      "PowerShell(Get-ChildItem -Recurse \"c:\\\\Users\\\\babom\\\\OneDrive\\\\Documents\\\\GitHub\\\\cuadros_de_viaje\" -Exclude \".git\" -Force | Where-Object { $_.FullName -notmatch '\\\\.git' } | Select-Object -ExpandProperty FullName)",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)"
+    ],
+    "additionalDirectories": [
+      "c:\\Users\\babom\\OneDrive\\Documents\\GitHub\\cuadros_de_viaje\\.claude"
+    ]
+  }
+}

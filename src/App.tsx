@@ -7,6 +7,8 @@ import { RegisterPage } from '@/pages/RegisterPage'
 import { VerifyEmailPage } from '@/pages/VerifyEmailPage'
 import { DashboardPage } from '@/pages/DashboardPage'
 import { TripFormPage } from '@/pages/TripFormPage'
+import { TripDetailPage } from '@/pages/TripDetailPage'
+import { TransportFormPage } from '@/pages/TransportFormPage'
 import { AppHeader } from '@/components/AppHeader'
 import { Box } from '@mui/material'
 
@@ -26,8 +28,10 @@ export default function App() {
               <Route element={<PrivateRoute />}>
                 <Route path="/dashboard" element={<DashboardPage />} />
                 <Route path="/trips/new" element={<TripFormPage />} />
-                <Route path="/trips/:id" element={<div>Detalle del viaje — próximamente</div>} />
+                <Route path="/trips/:id" element={<TripDetailPage />} />
                 <Route path="/trips/:id/edit" element={<TripFormPage />} />
+                <Route path="/trips/:viajeId/transport/new" element={<TransportFormPage />} />
+                <Route path="/trips/:viajeId/transport/:itemId/edit" element={<TransportFormPage />} />
               </Route>
 
               <Route path="*" element={<Navigate to="/dashboard" replace />} />

@@ -9,11 +9,11 @@ describe('TransportForm validation helpers', () => {
     const regex = /^([0-1]\d|2[0-3]):[0-5]\d$/
 
     validHours.forEach((hour) => {
-      expect(regex.test(hour)).toBe(true, `${hour} should be valid`)
+      expect(regex.test(hour)).toBe(true)
     })
 
     invalidHours.forEach((hour) => {
-      expect(regex.test(hour)).toBe(false, `${hour} should be invalid`)
+      expect(regex.test(hour)).toBe(false)
     })
   })
 

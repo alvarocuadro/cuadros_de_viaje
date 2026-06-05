@@ -17,22 +17,23 @@ import {
 import { Add as AddIcon } from '@mui/icons-material'
 import { useState, useEffect } from 'react'
 import { useTrips } from '@/context/TripsContext'
-import { getTransporte, deleteTransporte } from '@/services/itemsService'
+import { getTransporte, deleteTransporte, getHospedaje, deleteHospedaje } from '@/services/itemsService'
 import { TransportItem } from '@/components/TransportItem'
+import { AccommodationItem } from '@/components/AccommodationItem'
 import { EmptyState } from '@/components/EmptyState'
 import { formatDate } from '@/utils/formatters'
-import type { ItemTransporte } from '@/types/items'
+import type { ItemTransporte, ItemHospedaje, ItemAgenda } from '@/types/items'
 
 export function TripDetailPage() {
   const navigate = useNavigate()
   const { id } = useParams<{ id: string }>()
   const { viajes } = useTrips()
-  const [items, setItems] = useState<ItemTransporte[]>([])
+  const [agenda, setAgenda] = useState<ItemAgenda[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null)
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
-  const [itemToDelete, setItemToDelete] = useState<ItemTransporte | null>(null)
+  const [itemToDelete, setItemToDelete] = useState<{ tipo: 'transporte' | 'hospedaje'; id: string } | null>(null)
   const [deleting, setDeleting] = useState(false)
 
   const viaje = id ? viajes.find((v) => v.id === id) : undefined
@@ -46,13 +47,38 @@ export function TripDetailPage() {
     const loadItems = async () => {
       setLoading(true)
       setError(null)
-      const response = await getTransporte(id)
-      if (response.success && response.data) {
-        setItems(response.data)
-      } else {
-        setError(response.error?.message || 'Error al cargar los ítems')
+      try {
+        const [transportRes, hospedajeRes] = await Promise.all([getTransporte(id), getHospedaje(id)])
+
+        const items: ItemAgenda[] = []
+
+        if (transportRes.success && transportRes.data) {
+          transportRes.data.forEach((item) => {
+            items.push({
+              tipo: 'transporte',
+              fecha_inicio: item.fecha_salida,
+              datos: item,
+            })
+          })
+        }
+
+        if (hospedajeRes.success && hospedajeRes.data) {
+          hospedajeRes.data.forEach((item) => {
+            items.push({
+              tipo: 'hospedaje',
+              fecha_inicio: item.fecha_checkin,
+              datos: item,
+            })
+          })
+        }
+
+        items.sort((a, b) => a.fecha_inicio.localeCompare(b.fecha_inicio))
+        setAgenda(items)
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Error al cargar los ítems')
+      } finally {
+        setLoading(false)
       }
-      setLoading(false)
     }
 
     loadItems()
@@ -71,12 +97,21 @@ export function TripDetailPage() {
     navigate(`/trips/${id}/transport/new`)
   }
 
+  const handleAddHospedaje = () => {
+    handleAddMenuClose()
+    navigate(`/trips/${id}/accommodation/new`)
+  }
+
   const handleEditTransporte = (item: ItemTransporte) => {
     navigate(`/trips/${id}/transport/${item.id}/edit`)
   }
 
-  const handleDeleteTransporte = (item: ItemTransporte) => {
-    setItemToDelete(item)
+  const handleEditHospedaje = (item: ItemHospedaje) => {
+    navigate(`/trips/${id}/accommodation/${item.id}/edit`)
+  }
+
+  const handleDeleteItem = (tipo: 'transporte' | 'hospedaje', itemId: string) => {
+    setItemToDelete({ tipo, id: itemId })
     setDeleteDialogOpen(true)
   }
 
@@ -84,11 +119,12 @@ export function TripDetailPage() {
     if (!itemToDelete) return
 
     setDeleting(true)
-    const response = await deleteTransporte(itemToDelete.id)
+    const response =
+      itemToDelete.tipo === 'transporte' ? await deleteTransporte(itemToDelete.id) : await deleteHospedaje(itemToDelete.id)
     setDeleting(false)
 
     if (response.success) {
-      setItems(items.filter((i) => i.id !== itemToDelete.id))
+      setAgenda(agenda.filter((a) => !(a.tipo === itemToDelete.tipo && (a.datos as any).id === itemToDelete.id)))
       setDeleteDialogOpen(false)
       setItemToDelete(null)
     } else {
@@ -139,21 +175,30 @@ export function TripDetailPage() {
           <Box sx={{ display: 'flex', justifyContent: 'center', py: 4 }}>
             <CircularProgress />
           </Box>
-        ) : items.length === 0 ? (
+        ) : agenda.length === 0 ? (
           <EmptyState
             title="Sin ítems"
             description="Agrega transporte u hospedaje para organizar tu viaje"
             icon="📋"
           />
         ) : (
-          items.map((item) => (
-            <TransportItem
-              key={item.id}
-              item={item}
-              onEdit={handleEditTransporte}
-              onDelete={handleDeleteTransporte}
-            />
-          ))
+          agenda.map((item) =>
+            item.tipo === 'transporte' ? (
+              <TransportItem
+                key={item.datos.id}
+                item={item.datos as ItemTransporte}
+                onEdit={handleEditTransporte}
+                onDelete={(i) => handleDeleteItem('transporte', i.id)}
+              />
+            ) : (
+              <AccommodationItem
+                key={item.datos.id}
+                item={item.datos as ItemHospedaje}
+                onEdit={handleEditHospedaje}
+                onDelete={(i) => handleDeleteItem('hospedaje', i.id)}
+              />
+            ),
+          )
         )}
       </Box>
 
@@ -178,7 +223,7 @@ export function TripDetailPage() {
         transformOrigin={{ vertical: 'bottom', horizontal: 'right' }}
       >
         <MenuItem onClick={handleAddTransporte}>Agregar Transporte</MenuItem>
-        <MenuItem disabled>Agregar Hospedaje (próximamente)</MenuItem>
+        <MenuItem onClick={handleAddHospedaje}>Agregar Hospedaje</MenuItem>
       </Menu>
 
       <Dialog open={deleteDialogOpen} onClose={() => !deleting && setDeleteDialogOpen(false)}>

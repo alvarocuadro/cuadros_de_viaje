@@ -21,13 +21,16 @@ import { getTransporte, deleteTransporte, getHospedaje, deleteHospedaje } from '
 import { TransportItem } from '@/components/TransportItem'
 import { AccommodationItem } from '@/components/AccommodationItem'
 import { EmptyState } from '@/components/EmptyState'
+import { TripDetailSkeleton } from '@/components/SkeletonLoader'
 import { formatDate } from '@/utils/formatters'
+import { useSnackbar } from '@/context/SnackbarContext'
 import type { ItemTransporte, ItemHospedaje, ItemAgenda } from '@/types/items'
 
 export function TripDetailPage() {
   const navigate = useNavigate()
   const { id } = useParams<{ id: string }>()
   const { viajes } = useTrips()
+  const snackbar = useSnackbar()
   const [agenda, setAgenda] = useState<ItemAgenda[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -127,8 +130,11 @@ export function TripDetailPage() {
       setAgenda(agenda.filter((a) => !(a.tipo === itemToDelete.tipo && (a.datos as any).id === itemToDelete.id)))
       setDeleteDialogOpen(false)
       setItemToDelete(null)
+      snackbar.showSuccess('Ítem eliminado correctamente')
     } else {
-      setError(response.error?.message || 'Error al eliminar')
+      const errorMsg = response.error?.message || 'Error al eliminar'
+      setError(errorMsg)
+      snackbar.showError(errorMsg)
     }
   }
 
@@ -172,9 +178,7 @@ export function TripDetailPage() {
         </Typography>
 
         {loading ? (
-          <Box sx={{ display: 'flex', justifyContent: 'center', py: 4 }}>
-            <CircularProgress />
-          </Box>
+          <TripDetailSkeleton />
         ) : agenda.length === 0 ? (
           <EmptyState
             title="Sin ítems"

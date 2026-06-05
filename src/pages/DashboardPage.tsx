@@ -1,10 +1,11 @@
 import { useNavigate } from 'react-router-dom'
-import { Container, Box, Typography, Fab, Alert, CircularProgress } from '@mui/material'
+import { Container, Box, Typography, Fab, Alert } from '@mui/material'
 import AddIcon from '@mui/icons-material/Add'
 import { useState } from 'react'
 import { TripGroup } from '@/components/TripGroup'
 import { TripDeleteDialog } from '@/components/TripDeleteDialog'
 import { EmptyState } from '@/components/EmptyState'
+import { TripCardSkeleton } from '@/components/SkeletonLoader'
 import { useTrips } from '@/context/TripsContext'
 
 export function DashboardPage() {
@@ -37,8 +38,13 @@ export function DashboardPage() {
   if (loading) {
     return (
       <Container maxWidth="md">
-        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '60vh' }}>
-          <CircularProgress />
+        <Box sx={{ py: 3 }}>
+          <Typography variant="h5" sx={{ mb: 3 }}>
+            Mis viajes
+          </Typography>
+          {[1, 2, 3].map((i) => (
+            <TripCardSkeleton key={i} />
+          ))}
         </Box>
       </Container>
     )

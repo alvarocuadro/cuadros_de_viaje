@@ -3,11 +3,13 @@ import { Container, Box, Typography, Paper, Alert } from '@mui/material'
 import { useState } from 'react'
 import { AccommodationForm } from '@/components/AccommodationForm'
 import { createHospedaje, updateHospedaje } from '@/services/itemsService'
+import { useSnackbar } from '@/context/SnackbarContext'
 import type { ItemHospedaje } from '@/types/items'
 
 export function AccommodationFormPage() {
   const navigate = useNavigate()
   const { viajeId, itemId } = useParams<{ viajeId: string; itemId?: string }>()
+  const snackbar = useSnackbar()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
@@ -23,15 +25,21 @@ export function AccommodationFormPage() {
       if (itemId) {
         const response = await updateHospedaje(itemId, itemWithoutViajeId)
         if (!response.success) {
-          setError(response.error?.message || 'Error al actualizar')
+          const errorMsg = response.error?.message || 'Error al actualizar'
+          setError(errorMsg)
+          snackbar.showError(errorMsg)
           return
         }
+        snackbar.showSuccess('Hospedaje actualizado correctamente')
       } else {
         const response = await createHospedaje(viajeId, itemWithoutViajeId)
         if (!response.success) {
-          setError(response.error?.message || 'Error al crear')
+          const errorMsg = response.error?.message || 'Error al crear'
+          setError(errorMsg)
+          snackbar.showError(errorMsg)
           return
         }
+        snackbar.showSuccess('Hospedaje creado correctamente')
       }
 
       navigate(`/trips/${viajeId}`)

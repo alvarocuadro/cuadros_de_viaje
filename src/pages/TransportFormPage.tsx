@@ -3,11 +3,13 @@ import { Container, Box, Typography, Paper, Alert } from '@mui/material'
 import { useState } from 'react'
 import { TransportForm } from '@/components/TransportForm'
 import { createTransporte, updateTransporte } from '@/services/itemsService'
+import { useSnackbar } from '@/context/SnackbarContext'
 import type { ItemTransporte } from '@/types/items'
 
 export function TransportFormPage() {
   const navigate = useNavigate()
   const { viajeId, itemId } = useParams<{ viajeId: string; itemId?: string }>()
+  const snackbar = useSnackbar()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
@@ -23,15 +25,21 @@ export function TransportFormPage() {
       if (itemId) {
         const response = await updateTransporte(itemId, itemWithoutViajeId)
         if (!response.success) {
-          setError(response.error?.message || 'Error al actualizar')
+          const errorMsg = response.error?.message || 'Error al actualizar'
+          setError(errorMsg)
+          snackbar.showError(errorMsg)
           return
         }
+        snackbar.showSuccess('Transporte actualizado correctamente')
       } else {
         const response = await createTransporte(viajeId, itemWithoutViajeId)
         if (!response.success) {
-          setError(response.error?.message || 'Error al crear')
+          const errorMsg = response.error?.message || 'Error al crear'
+          setError(errorMsg)
+          snackbar.showError(errorMsg)
           return
         }
+        snackbar.showSuccess('Transporte creado correctamente')
       }
 
       navigate(`/trips/${viajeId}`)

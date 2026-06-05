@@ -277,9 +277,16 @@ export async function getCurrentUser(): Promise<Usuario | null> {
 }
 
 export function onAuthStateChange(callback: (user: Usuario | null) => void) {
+  // Verificar sesión actual inmediatamente
+  getCurrentUser().then((user) => {
+    callback(user)
+  })
+
+  // Escuchar cambios de auth state
   const {
     data: { subscription },
-  } = supabase.auth.onAuthStateChange(async () => {
+  } = supabase.auth.onAuthStateChange(async (event, session) => {
+    console.log('[Auth] State changed:', event, session?.user?.email)
     const user = await getCurrentUser()
     callback(user)
   })

@@ -1,0 +1,201 @@
+[
+  {
+    "id": "accommodation-001",
+    "viaje_id": "trip-001-actual",
+    "tipo": "hotel",
+    "nombre": "Hotel Omm Barcelona",
+    "fecha_checkin": "2026-06-01",
+    "fecha_checkout": "2026-06-05",
+    "dirección": "Passeig de Gràcia 109, Barcelona",
+    "teléfono": "+34 93 445 4000",
+    "email": "info@hotelomm.com",
+    "numero_reserva": "HOT-001-2026",
+    "datos_reserva": {
+      "reservado_por_agencia": false,
+      "codigos_reserva": ["HOT-001-2026"],
+      "url_reserva": "https://booking.com/HOT-001-2026",
+      "comentarios": "Suite con vistas. Desayuno incluido."
+    },
+    "created_at": "2026-05-20T10:30:00Z",
+    "updated_at": "2026-05-20T10:30:00Z"
+  },
+  {
+    "id": "accommodation-002",
+    "viaje_id": "trip-001-actual",
+    "tipo": "airbnb",
+    "nombre": "Acogedor piso en Malasaña",
+    "fecha_checkin": "2026-06-05",
+    "fecha_checkout": "2026-06-10",
+    "dirección": "Calle Velarde 24, Madrid",
+    "teléfono": "+34 912 445 223",
+    "email": "host@airbnb.com",
+    "numero_reserva": "AIR-2026-5849",
+    "datos_reserva": {
+      "reservado_por_agencia": false,
+      "codigos_reserva": ["AIR-2026-5849"],
+      "url_reserva": "https://airbnb.com/rooms/5849",
+      "comentarios": "Apartamento con cocina. Check-out a las 11:00."
+    },
+    "created_at": "2026-05-20T10:30:00Z",
+    "updated_at": "2026-05-20T10:30:00Z"
+  },
+  {
+    "id": "accommodation-003",
+    "viaje_id": "trip-001-futuro-1",
+    "tipo": "hotel",
+    "nombre": "Hotel Borg Reykjavik",
+    "fecha_checkin": "2026-07-15",
+    "fecha_checkout": "2026-07-28",
+    "dirección": "Austurstræti 18, Reykjavik",
+    "teléfono": "+354 595 8900",
+    "email": "info@hotelborg.is",
+    "numero_reserva": "HB-2026-7415",
+    "datos_reserva": {
+      "reservado_por_agencia": false,
+      "codigos_reserva": ["HB-2026-7415"],
+      "url_reserva": "https://hotelborg.is/HB-2026-7415",
+      "comentarios": "Céntrico. WiFi gratuito. Desayuno buffet."
+    },
+    "created_at": "2026-05-15T08:00:00Z",
+    "updated_at": "2026-05-15T08:00:00Z"
+  },
+  {
+    "id": "accommodation-004",
+    "viaje_id": "trip-001-futuro-2",
+    "tipo": "hotel",
+    "nombre": "Amanpuri Resort",
+    "fecha_checkin": "2026-09-01",
+    "fecha_checkout": "2026-09-08",
+    "dirección": "Phuket 83120, Tailandia",
+    "teléfono": "+66 76 324 333",
+    "email": "reservas@amanpuri.com",
+    "numero_reserva": "AMA-PHUKET-2026",
+    "datos_reserva": {
+      "reservado_por_agencia": true,
+      "nombre_agencia": "Global Travel",
+      "codigos_reserva": ["AMA-PHUKET-2026"],
+      "url_reserva": "https://amanpuri.com/AMA-PHUKET-2026",
+      "comentarios": "Resort de lujo. All-inclusive con tratamientos spa."
+    },
+    "created_at": "2026-04-10T14:22:00Z",
+    "updated_at": "2026-04-10T14:22:00Z"
+  },
+  {
+    "id": "accommodation-005",
+    "viaje_id": "trip-001-futuro-2",
+    "tipo": "airbnb",
+    "nombre": "Casa con piscina en Krabi",
+    "fecha_checkin": "2026-09-08",
+    "fecha_checkout": "2026-09-15",
+    "dirección": "Krabi 81000, Tailandia",
+    "email": "owner@airbnb-krabi.com",
+    "numero_reserva": "AIR-KRB-2026-8531",
+    "datos_reserva": {
+      "reservado_por_agencia": false,
+      "codigos_reserva": ["AIR-KRB-2026-8531"],
+      "url_reserva": "https://airbnb.com/rooms/krabi-8531",
+      "comentarios": "Piscina privada. Acceso a playa. Limpieza incluida."
+    },
+    "created_at": "2026-04-10T14:22:00Z",
+    "updated_at": "2026-04-10T14:22:00Z"
+  },
+  {
+    "id": "accommodation-006",
+    "viaje_id": "trip-001-pasado-1",
+    "tipo": "hotel",
+    "nombre": "Copacabana Palace",
+    "fecha_checkin": "2026-02-20",
+    "fecha_checkout": "2026-02-28",
+    "dirección": "Avenida Atlântica 1702, Rio de Janeiro",
+    "teléfono": "+55 21 2548-7070",
+    "email": "info@copacabanapalace.com",
+    "numero_reserva": "COP-RIO-2026",
+    "datos_reserva": {
+      "reservado_por_agencia": false,
+      "codigos_reserva": ["COP-RIO-2026"],
+      "url_reserva": "https://copacabanapalace.com/COP-RIO-2026",
+      "comentarios": "Icónico. Frente a la playa. Acceso a piscina y spa."
+    },
+    "created_at": "2026-01-20T09:15:00Z",
+    "updated_at": "2026-01-20T09:15:00Z"
+  },
+  {
+    "id": "accommodation-007",
+    "viaje_id": "trip-001-pasado-1",
+    "tipo": "airbnb",
+    "nombre": "Penthouse en Leblon",
+    "fecha_checkin": "2026-02-28",
+    "fecha_checkout": "2026-03-05",
+    "dirección": "Avenida Delfim Moreira 1000, Rio de Janeiro",
+    "email": "owner@airbnb-leblon.com",
+    "numero_reserva": "AIR-LEB-2026-3451",
+    "datos_reserva": {
+      "reservado_por_agencia": false,
+      "codigos_reserva": ["AIR-LEB-2026-3451"],
+      "url_reserva": "https://airbnb.com/rooms/leblon-3451",
+      "comentarios": "Vistas al mar. Terraza amplia. Limpieza diaria."
+    },
+    "created_at": "2026-01-20T09:15:00Z",
+    "updated_at": "2026-01-20T09:15:00Z"
+  },
+  {
+    "id": "accommodation-008",
+    "viaje_id": "trip-002-actual",
+    "tipo": "hotel",
+    "nombre": "Hotel Artemide",
+    "fecha_checkin": "2026-05-25",
+    "fecha_checkout": "2026-05-28",
+    "dirección": "Via Vittorio Emanuele Orlando 75, Roma",
+    "teléfono": "+39 06 487 3911",
+    "email": "info@artemidehotel.com",
+    "numero_reserva": "ART-ROMA-2026",
+    "datos_reserva": {
+      "reservado_por_agencia": false,
+      "codigos_reserva": ["ART-ROMA-2026"],
+      "url_reserva": "https://artemidehotel.com/ART-ROMA-2026",
+      "comentarios": "Boutique hotel. Rooftop con vistas al Coliseo."
+    },
+    "created_at": "2026-05-01T07:30:00Z",
+    "updated_at": "2026-05-01T07:30:00Z"
+  },
+  {
+    "id": "accommodation-009",
+    "viaje_id": "trip-002-actual",
+    "tipo": "airbnb",
+    "nombre": "Loft en el centro de Florencia",
+    "fecha_checkin": "2026-05-28",
+    "fecha_checkout": "2026-06-02",
+    "dirección": "Via Roma 12, Florencia",
+    "email": "owner@airbnb-florence.com",
+    "numero_reserva": "AIR-FLR-2026-7892",
+    "datos_reserva": {
+      "reservado_por_agencia": false,
+      "codigos_reserva": ["AIR-FLR-2026-7892"],
+      "url_reserva": "https://airbnb.com/rooms/florence-7892",
+      "comentarios": "Cerca del Duomo. Acceso a terraza."
+    },
+    "created_at": "2026-05-01T07:30:00Z",
+    "updated_at": "2026-05-01T07:30:00Z"
+  },
+  {
+    "id": "accommodation-010",
+    "viaje_id": "trip-002-actual",
+    "tipo": "hotel",
+    "nombre": "Hotel Gritti Palace",
+    "fecha_checkin": "2026-06-02",
+    "fecha_checkout": "2026-06-08",
+    "dirección": "Campo Santa Maria del Giglio 2467, Venecia",
+    "teléfono": "+39 041 794 611",
+    "email": "info@luxurycollection-venice.com",
+    "numero_reserva": "GRP-VEN-2026",
+    "datos_reserva": {
+      "reservado_por_agencia": true,
+      "nombre_agencia": "Luxury Travel Concierge",
+      "codigos_reserva": ["GRP-VEN-2026"],
+      "url_reserva": "https://luxurycollection-venice.com/GRP-VEN-2026",
+      "comentarios": "Histórico 5 estrellas. Gondola service disponible."
+    },
+    "created_at": "2026-05-01T07:30:00Z",
+    "updated_at": "2026-05-01T07:30:00Z"
+  }
+]

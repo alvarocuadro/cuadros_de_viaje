@@ -1,0 +1,264 @@
+/* =========================================================
+   Cuadros de Viaje — Design Tokens
+   Generado: 2026-06-05
+   Fuente: docs/public/prototype/app/colors_and_type.css + ui.css
+   Personalidad: confiable, claro, ordenado, liviano, moderno.
+   ========================================================= */
+
+@import url('https://fonts.googleapis.com/css2?family=Hanken+Grotesk:ital,wght@0,400..800;1,400..600&family=Spline+Sans+Mono:wght@400..600&display=swap');
+
+/* --- Tipografía --- */
+:root {
+  --font-sans: 'Hanken Grotesk', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: 'Spline Sans Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+
+  --typography-size-display: 32px;
+  --typography-size-h1: 24px;
+  --typography-size-h2: 20px;
+  --typography-size-h3: 17px;
+  --typography-size-body: 16px;
+  --typography-size-sm: 14px;
+  --typography-size-caption: 13px;
+  --typography-size-micro: 12px;
+  --typography-size-overline: 11px;
+
+  --typography-lh-display: 36px;
+  --typography-lh-h1: 28px;
+  --typography-lh-h2: 25px;
+  --typography-lh-h3: 22px;
+  --typography-lh-body: 23px;
+  --typography-lh-sm: 20px;
+  --typography-lh-caption: 18px;
+  --typography-lh-micro: 16px;
+  --typography-lh-overline: 14px;
+
+  --typography-ls-display: -0.02em;
+  --typography-ls-h1: -0.015em;
+  --typography-ls-h2: -0.01em;
+  --typography-ls-h3: -0.005em;
+  --typography-ls-overline: 0.07em;
+
+  --typography-weight-regular: 400;
+  --typography-weight-medium: 500;
+  --typography-weight-semibold: 600;
+  --typography-weight-bold: 700;
+}
+
+/* --- Espaciado (base 4px) --- */
+:root {
+  --spacing-0: 0px;
+  --spacing-1: 2px;
+  --spacing-2: 4px;
+  --spacing-3: 8px;
+  --spacing-4: 12px;
+  --spacing-5: 16px;
+  --spacing-6: 20px;
+  --spacing-7: 24px;
+  --spacing-8: 32px;
+  --spacing-9: 40px;
+  --spacing-10: 48px;
+  --spacing-12: 64px;
+  --spacing-14: 80px;
+}
+
+/* --- Border Radius --- */
+:root {
+  --border-radius-xs: 6px;
+  --border-radius-sm: 8px;
+  --border-radius-md: 12px;   /* inputs, chips, icon containers */
+  --border-radius-lg: 16px;   /* cards (default) */
+  --border-radius-xl: 20px;   /* bottom sheets, big cards */
+  --border-radius-2xl: 28px;
+  --border-radius-pill: 999px; /* buttons, badges, FAB, switch */
+}
+
+/* --- Sombras — Light mode --- */
+:root {
+  --shadow-xs: 0 1px 2px rgba(14, 28, 40, 0.05);
+  --shadow-sm: 0 1px 3px rgba(14, 28, 40, 0.07), 0 1px 2px rgba(14, 28, 40, 0.04);
+  --shadow-md: 0 4px 12px rgba(14, 28, 40, 0.09), 0 2px 4px rgba(14, 28, 40, 0.05);
+  --shadow-lg: 0 12px 28px rgba(14, 28, 40, 0.13), 0 4px 8px rgba(14, 28, 40, 0.06);
+  --shadow-sheet: 0 -8px 28px rgba(14, 28, 40, 0.14);
+}
+
+/* --- Motion --- */
+:root {
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --transition-duration-fast: 120ms;
+  --transition-duration-normal: 200ms;
+  --transition-duration-slow: 320ms;
+}
+
+/* --- Layout --- */
+:root {
+  --layout-app-max-width: 440px;
+  --layout-tap-min: 44px;
+  --layout-header-height: 56px;
+  --layout-tabbar-height: 64px;
+}
+
+/* --- Z-Index --- */
+:root {
+  --z-index-sticky: 4;
+  --z-index-fixed: 5;
+  --z-index-fab: 6;
+  --z-index-dropdown: 25;
+  --z-index-modal: 20;
+  --z-index-toast: 30;
+}
+
+/* =========================================================
+   COLORES — Light Mode (default)
+   ========================================================= */
+:root {
+  /* Superficies */
+  --color-canvas: #F5F7FA;
+  --color-surface: #FFFFFF;
+  --color-surface-sunken: #EEF2F6;
+  --color-surface-raised: #FFFFFF;
+
+  /* Bordes */
+  --color-border-subtle: #E6EBF1;
+  --color-border: #D6DEE7;
+  --color-border-strong: #BCC8D4;
+
+  /* Texto / Foreground */
+  --color-text-primary: #102A40;
+  --color-text-secondary: #45586A;
+  --color-text-muted: #7C8A98;
+  --color-text-disabled: #AEB9C4;
+  --color-text-on-accent: #FFFFFF;
+
+  /* Brand — Azul viaje */
+  --color-brand-50: #ECF4F9;
+  --color-brand-100: #D2E7F1;
+  --color-brand-200: #A8D1E4;
+  --color-brand-300: #74B5D4;
+  --color-brand-400: #3E96C0;
+  --color-brand-500: #2483AD;
+  --color-brand-600: #1E7FA8;   /* PRIMARY */
+  --color-brand-700: #186A8C;   /* hover */
+  --color-brand-800: #14536E;   /* press */
+  --color-brand-main: #1E7FA8;
+  --color-brand-hover: #186A8C;
+  --color-brand-press: #14536E;
+  --color-brand-tint: #ECF4F9;
+  --color-on-brand: #FFFFFF;
+
+  /* Navy — deep brand ink */
+  --color-navy: #123A5C;
+  --color-navy-700: #1A4C73;
+  --color-navy-900: #0E2B44;
+
+  /* Teal — accent (logo pin) */
+  --color-teal: #2FA39E;
+  --color-teal-strong: #237E7A;
+  --color-teal-light: #82C8C6;
+  --color-teal-tint: #E3F4F2;
+
+  /* Trip status */
+  --color-futuro: #2FA39E;
+  --color-futuro-strong: #237E7A;
+  --color-futuro-tint: #E3F4F2;
+  --color-on-futuro: #FFFFFF;
+
+  --color-actual: #1E7FA8;
+  --color-actual-strong: #14536E;
+  --color-actual-tint: #ECF4F9;
+  --color-on-actual: #FFFFFF;
+
+  --color-pasado: #64748B;
+  --color-pasado-strong: #51607A;
+  --color-pasado-tint: #EEF2F6;
+  --color-on-pasado: #FFFFFF;
+
+  /* Feedback */
+  --color-success: #16A34A;
+  --color-success-strong: #128040;
+  --color-success-tint: #E7F6EC;
+  --color-on-success: #FFFFFF;
+
+  --color-error: #DC2626;
+  --color-error-strong: #B91C1C;
+  --color-error-tint: #FCEBEA;
+  --color-on-error: #FFFFFF;
+
+  --color-warning: #D97706;
+  --color-warning-strong: #B45309;
+  --color-warning-tint: #FCEFD9;
+  --color-on-warning: #3A2606;
+
+  /* Focus ring */
+  --focus-ring: 0 0 0 3px rgba(30, 127, 168, 0.34);
+}
+
+/* =========================================================
+   COLORES — Dark Mode
+   ========================================================= */
+:root[data-theme="dark"],
+.theme-dark {
+  --color-canvas: #0B1620;
+  --color-surface: #12202C;
+  --color-surface-sunken: #0E1A24;
+  --color-surface-raised: #1A2A38;
+
+  --color-border-subtle: #1E2E3B;
+  --color-border: #283A48;
+  --color-border-strong: #38505F;
+
+  --color-text-primary: #EAF1F6;
+  --color-text-secondary: #AEBDC8;
+  --color-text-muted: #7C8C99;
+  --color-text-disabled: #54646F;
+  --color-text-on-accent: #06121A;
+
+  --color-brand-600: #3FA0CC;
+  --color-brand-main: #45A6D2;
+  --color-brand-hover: #5FB6DC;
+  --color-brand-press: #2E8DBA;
+  --color-brand-tint: #0E3247;
+  --color-on-brand: #06121A;
+
+  --color-navy: #1A4C73;
+  --color-navy-700: #2A608C;
+  --color-navy-900: #0C2336;
+
+  --color-teal: #4CBDB7;
+  --color-teal-strong: #6FD0CB;
+  --color-teal-light: #82C8C6;
+  --color-teal-tint: #0D2E2D;
+
+  --color-futuro: #4CBDB7;
+  --color-futuro-strong: #6FD0CB;
+  --color-futuro-tint: #0D2E2D;
+  --color-on-futuro: #06121A;
+
+  --color-actual: #45A6D2;
+  --color-actual-strong: #5FB6DC;
+  --color-actual-tint: #0E3247;
+  --color-on-actual: #06121A;
+
+  --color-pasado: #93A2B5;
+  --color-pasado-strong: #B0BECC;
+  --color-pasado-tint: #1A2735;
+  --color-on-pasado: #06121A;
+
+  --color-success: #34C77B;
+  --color-success-tint: #102A1E;
+
+  --color-error: #F26B6B;
+  --color-error-tint: #311517;
+
+  --color-warning: #F0A93B;
+  --color-warning-tint: #2E2008;
+  --color-on-warning: #2E2008;
+
+  --focus-ring: 0 0 0 3px rgba(69, 166, 210, 0.42);
+
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.40);
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.45), 0 1px 2px rgba(0, 0, 0, 0.30);
+  --shadow-md: 0 4px 14px rgba(0, 0, 0, 0.50);
+  --shadow-lg: 0 14px 32px rgba(0, 0, 0, 0.58);
+  --shadow-sheet: 0 -8px 28px rgba(0, 0, 0, 0.55);
+}

@@ -1,0 +1,292 @@
+/* ============================================================
+   PRODUCTO — Design Tokens
+   Travel agenda app · mobile-first · light + dark
+   Personality: confiable, claro, ordenado, liviano, moderno.
+   ------------------------------------------------------------
+   Fonts are loaded from Google Fonts (see README — substitution
+   flagged). Swap the @import for local fonts/ files if desired.
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Hanken+Grotesk:ital,wght@0,400..800;1,400..600&family=Spline+Sans+Mono:wght@400..600&display=swap');
+
+:root {
+  /* ---------- TYPE FAMILIES ---------- */
+  --font-sans: 'Hanken Grotesk', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: 'Spline Sans Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+
+  /* ---------- TYPE SCALE (mobile-first, px) ---------- */
+  --text-display: 32px;  --lh-display: 36px;  --ls-display: -0.02em;
+  --text-h1: 24px;       --lh-h1: 28px;       --ls-h1: -0.015em;
+  --text-h2: 20px;       --lh-h2: 25px;       --ls-h2: -0.01em;
+  --text-h3: 17px;       --lh-h3: 22px;       --ls-h3: -0.005em;
+  --text-body: 16px;     --lh-body: 23px;     --ls-body: 0;
+  --text-sm: 14px;       --lh-sm: 20px;       --ls-sm: 0;
+  --text-caption: 13px;  --lh-caption: 18px;  --ls-caption: 0.005em;
+  --text-micro: 12px;    --lh-micro: 16px;    --ls-micro: 0.01em;
+  --text-overline: 11px; --lh-overline: 14px; --ls-overline: 0.07em;
+
+  /* ---------- WEIGHTS ---------- */
+  --w-regular: 400;
+  --w-medium: 500;
+  --w-semibold: 600;
+  --w-bold: 700;
+
+  /* ============================================================
+     COLOR — LIGHT MODE (default)
+     ============================================================ */
+
+  /* Neutrals — airy cool slate */
+  --canvas:          #F5F7FA;  /* app background */
+  --surface:         #FFFFFF;  /* cards, sheets */
+  --surface-sunken:  #EEF2F6;  /* wells, inputs bg, list zebra */
+  --surface-raised:  #FFFFFF;
+
+  --border-subtle:   #E6EBF1;
+  --border:          #D6DEE7;
+  --border-strong:   #BCC8D4;
+
+  /* Foreground / text */
+  --fg1: #102A40;  /* headings, key data — navy ink */
+  --fg2: #45586A;  /* body, secondary */
+  --fg3: #7C8A98;  /* labels, captions, muted */
+  --fg-disabled: #AEB9C4;
+  --fg-on-accent: #FFFFFF;
+
+  /* Brand — Azul viaje (from logo icon) · also = ACTUAL trip status */
+  --brand-50:  #ECF4F9;
+  --brand-100: #D2E7F1;
+  --brand-200: #A8D1E4;
+  --brand-300: #74B5D4;
+  --brand-400: #3E96C0;
+  --brand-500: #2483AD;
+  --brand-600: #1E7FA8;  /* PRIMARY brand — logo azure */
+  --brand-700: #186A8C;  /* hover */
+  --brand-800: #14536E;  /* press / strong */
+  --brand:        var(--brand-600);
+  --brand-hover:  var(--brand-700);
+  --brand-press:  var(--brand-800);
+  --brand-tint:   var(--brand-50);
+  --on-brand:     #FFFFFF;
+
+  /* Navy — deep brand ink (from logo wordmark) */
+  --navy:    #123A5C;
+  --navy-700:#1A4C73;
+  --navy-900:#0E2B44;
+
+  /* Teal accent — light brand teal (from logo pin) */
+  --teal:        #2FA39E;
+  --teal-strong: #237E7A;
+  --teal-light:  #82C8C6;
+  --teal-tint:   #E3F4F2;
+
+  /* ---------- TRIP STATUS (semantic triad) ---------- */
+  /* FUTURO — upcoming / on the horizon (teal accent) */
+  --futuro:        #2FA39E;
+  --futuro-strong: #237E7A;
+  --futuro-tint:   #E3F4F2;
+  --on-futuro:     #FFFFFF;
+
+  /* ACTUAL — happening now / live (brand azure) */
+  --actual:        #1E7FA8;
+  --actual-strong: #14536E;
+  --actual-tint:   #ECF4F9;
+  --on-actual:     #FFFFFF;
+
+  /* PASADO — archived / done (slate) */
+  --pasado:        #64748B;
+  --pasado-strong: #51607A;
+  --pasado-tint:   #EEF2F6;
+  --on-pasado:     #FFFFFF;
+
+  /* ---------- FEEDBACK ---------- */
+  --success:       #16A34A;
+  --success-strong:#128040;
+  --success-tint:  #E7F6EC;
+  --on-success:    #FFFFFF;
+
+  --error:         #DC2626;
+  --error-strong:  #B91C1C;
+  --error-tint:    #FCEBEA;
+  --on-error:      #FFFFFF;
+
+  --warning:       #D97706;
+  --warning-strong:#B45309;
+  --warning-tint:  #FCEFD9;
+  --on-warning:    #3A2606;
+
+  --info:          var(--actual);
+  --info-tint:     var(--actual-tint);
+
+  /* Focus ring */
+  --focus-ring: 0 0 0 3px rgba(30, 127, 168, 0.34);
+
+  /* ---------- SPACING (4px base) ---------- */
+  --space-0: 0;
+  --space-1: 2px;
+  --space-2: 4px;
+  --space-3: 8px;
+  --space-4: 12px;
+  --space-5: 16px;
+  --space-6: 20px;
+  --space-7: 24px;
+  --space-8: 32px;
+  --space-9: 40px;
+  --space-10: 48px;
+  --space-12: 64px;
+  --space-14: 80px;
+
+  /* ---------- RADII ---------- */
+  --radius-xs: 6px;
+  --radius-sm: 8px;
+  --radius-md: 12px;   /* inputs, chips */
+  --radius-lg: 16px;   /* cards */
+  --radius-xl: 20px;   /* sheets, big cards */
+  --radius-2xl: 28px;
+  --radius-pill: 999px;
+
+  /* ---------- ELEVATION (soft, airy) ---------- */
+  --shadow-xs: 0 1px 2px rgba(14, 28, 40, 0.05);
+  --shadow-sm: 0 1px 3px rgba(14, 28, 40, 0.07), 0 1px 2px rgba(14, 28, 40, 0.04);
+  --shadow-md: 0 4px 12px rgba(14, 28, 40, 0.09), 0 2px 4px rgba(14, 28, 40, 0.05);
+  --shadow-lg: 0 12px 28px rgba(14, 28, 40, 0.13), 0 4px 8px rgba(14, 28, 40, 0.06);
+  --shadow-sheet: 0 -8px 28px rgba(14, 28, 40, 0.14);
+
+  /* ---------- MOTION ---------- */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --dur-fast: 120ms;
+  --dur-base: 200ms;
+  --dur-slow: 320ms;
+
+  /* ---------- LAYOUT ---------- */
+  --app-max-w: 440px;     /* mobile-first canvas width */
+  --tap-min: 44px;        /* minimum touch target */
+  --header-h: 56px;
+  --tabbar-h: 64px;
+}
+
+/* ============================================================
+   DARK MODE
+   ============================================================ */
+:root[data-theme="dark"],
+.theme-dark {
+  --canvas:          #0B1620;
+  --surface:         #12202C;
+  --surface-sunken:  #0E1A24;
+  --surface-raised:  #1A2A38;
+
+  --border-subtle:   #1E2E3B;
+  --border:          #283A48;
+  --border-strong:   #38505F;
+
+  --fg1: #EAF1F6;
+  --fg2: #AEBDC8;
+  --fg3: #7C8C99;
+  --fg-disabled: #54646F;
+  --fg-on-accent: #06121A;
+
+  --brand-600: #3FA0CC;  /* lifted for contrast on dark */
+  --brand:       #45A6D2;
+  --brand-hover: #5FB6DC;
+  --brand-press: #2E8DBA;
+  --brand-tint:  #0E3247;
+  --on-brand:    #06121A;
+
+  --navy:    #1A4C73;
+  --navy-700:#2A608C;
+  --navy-900:#0C2336;
+
+  --teal:        #4CBDB7;
+  --teal-strong: #6FD0CB;
+  --teal-light:  #82C8C6;
+  --teal-tint:   #0D2E2D;
+
+  --futuro:        #4CBDB7;
+  --futuro-strong: #6FD0CB;
+  --futuro-tint:   #0D2E2D;
+  --on-futuro:     #06121A;
+
+  --actual:        #45A6D2;
+  --actual-strong: #5FB6DC;
+  --actual-tint:   #0E3247;
+  --on-actual:     #06121A;
+
+  --pasado:        #93A2B5;
+  --pasado-strong: #B0BECC;
+  --pasado-tint:   #1A2735;
+  --on-pasado:     #06121A;
+
+  --success:       #34C77B;
+  --success-tint:  #102A1E;
+  --error:         #F26B6B;
+  --error-tint:    #311517;
+  --warning:       #F0A93B;
+  --warning-tint:  #2E2008;
+  --on-warning:    #2E2008;
+
+  --focus-ring: 0 0 0 3px rgba(69, 166, 210, 0.42);
+
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.40);
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.45), 0 1px 2px rgba(0, 0, 0, 0.30);
+  --shadow-md: 0 4px 14px rgba(0, 0, 0, 0.50);
+  --shadow-lg: 0 14px 32px rgba(0, 0, 0, 0.58);
+  --shadow-sheet: 0 -8px 28px rgba(0, 0, 0, 0.55);
+}
+
+/* ============================================================
+   SEMANTIC TYPE CLASSES
+   ============================================================ */
+.t-display {
+  font-family: var(--font-sans);
+  font-size: var(--text-display); line-height: var(--lh-display);
+  letter-spacing: var(--ls-display); font-weight: var(--w-bold);
+  color: var(--fg1);
+}
+.t-h1 {
+  font-family: var(--font-sans);
+  font-size: var(--text-h1); line-height: var(--lh-h1);
+  letter-spacing: var(--ls-h1); font-weight: var(--w-bold); color: var(--fg1);
+}
+.t-h2 {
+  font-family: var(--font-sans);
+  font-size: var(--text-h2); line-height: var(--lh-h2);
+  letter-spacing: var(--ls-h2); font-weight: var(--w-semibold); color: var(--fg1);
+}
+.t-h3 {
+  font-family: var(--font-sans);
+  font-size: var(--text-h3); line-height: var(--lh-h3);
+  letter-spacing: var(--ls-h3); font-weight: var(--w-semibold); color: var(--fg1);
+}
+.t-body {
+  font-family: var(--font-sans);
+  font-size: var(--text-body); line-height: var(--lh-body); font-weight: var(--w-regular);
+  color: var(--fg2);
+}
+.t-sm {
+  font-family: var(--font-sans);
+  font-size: var(--text-sm); line-height: var(--lh-sm); font-weight: var(--w-regular);
+  color: var(--fg2);
+}
+.t-caption {
+  font-family: var(--font-sans);
+  font-size: var(--text-caption); line-height: var(--lh-caption); font-weight: var(--w-regular);
+  color: var(--fg3);
+}
+.t-overline {
+  font-family: var(--font-sans);
+  font-size: var(--text-overline); line-height: var(--lh-overline);
+  letter-spacing: var(--ls-overline); font-weight: var(--w-semibold);
+  text-transform: uppercase; color: var(--fg3);
+}
+/* Reservation codes, flight numbers, times — tabular mono */
+.t-mono {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm); line-height: var(--lh-sm);
+  font-weight: var(--w-medium); letter-spacing: 0.01em;
+  font-variant-numeric: tabular-nums; color: var(--fg1);
+}
+/* Big times / numerals — tabular for clean alignment */
+.t-num {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+}

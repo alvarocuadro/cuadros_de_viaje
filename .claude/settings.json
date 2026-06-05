@@ -6,7 +6,8 @@
       "Bash(mkdir -p \"c:\\\\Users\\\\babom\\\\OneDrive\\\\Documents\\\\GitHub\\\\cuadros_de_viaje\\\\.claude\\\\commands\" \"c:\\\\Users\\\\babom\\\\OneDrive\\\\Documents\\\\GitHub\\\\cuadros_de_viaje\\\\docs\")",
       "PowerShell(Get-ChildItem -Recurse \"c:\\\\Users\\\\babom\\\\OneDrive\\\\Documents\\\\GitHub\\\\cuadros_de_viaje\" -Exclude \".git\" -Force | Where-Object { $_.FullName -notmatch '\\\\.git' } | Select-Object -ExpandProperty FullName)",
       "Bash(git add *)",
-      "Bash(git commit -m ' *)"
+      "Bash(git commit -m ' *)",
+      "PowerShell(Set-Location \"c:\\\\Users\\\\babom\\\\OneDrive\\\\Documents\\\\GitHub\\\\cuadros_de_viaje\"; $job = Start-Job { Set-Location \"c:\\\\Users\\\\babom\\\\OneDrive\\\\Documents\\\\GitHub\\\\cuadros_de_viaje\"; npm run dev 2>&1 }; Start-Sleep 8; Receive-Job $job; Stop-Job $job; Remove-Job $job)"
     ],
     "additionalDirectories": [
       "c:\\Users\\babom\\OneDrive\\Documents\\GitHub\\cuadros_de_viaje\\.claude"

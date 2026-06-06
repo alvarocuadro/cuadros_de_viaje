@@ -21,7 +21,7 @@ export interface ItemTransporte {
   fecha_llegada: string
   hora_llegada: string
   numero_servicio: string
-  numero_reserva: string
+  numero_reserva?: string
   asiento?: string
   datos_reserva: DatosReserva
   created_at: string

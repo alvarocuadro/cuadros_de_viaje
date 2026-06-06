@@ -5,6 +5,7 @@ import { Brightness4, Brightness7 } from '@mui/icons-material'
 import { useAuth } from '@/context/AuthContext'
 import { useAppTheme } from '@/context/ThemeContext'
 import { Logo } from '@/components/Logo'
+import { getUserInitials } from '@/utils/userInitials'
 
 export function AppHeader() {
   const { user, logout } = useAuth()
@@ -30,22 +31,69 @@ export function AppHeader() {
     }
   }
 
-  const getInitials = () => {
-    if (!user) return '?'
-    return `${user.nombre[0]}${user.apellido[0]}`.toUpperCase()
-  }
-
   return (
     <AppBar position="static" sx={{ bgcolor: 'background.paper', color: 'text.primary', boxShadow: 1 }}>
-      <Toolbar sx={{ gap: 1 }}>
-        <Logo width={40} height={40} style={{ color: 'currentColor' }} />
-        <Typography
-          variant="h6"
-          sx={{ flex: 1, cursor: 'pointer', fontWeight: 700, letterSpacing: '-0.01em' }}
+      <Toolbar sx={{ gap: { xs: 0.75, sm: 1.25 } }}>
+        <Box
+          aria-label="Ir al inicio"
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            flex: 1,
+            minWidth: 0,
+            gap: { xs: 0.75, sm: 1.25 },
+            cursor: 'pointer',
+          }}
           onClick={() => navigate('/')}
         >
-          Cuadros de Viaje
-        </Typography>
+          <Box sx={{ flexShrink: 0, width: { xs: 40, sm: 44 }, height: { xs: 40, sm: 44 } }}>
+            <Logo width="100%" height="100%" style={{ color: 'currentColor' }} />
+          </Box>
+
+          <Box
+            sx={{
+              display: { xs: 'flex', sm: 'none' },
+              height: 40,
+              minWidth: 0,
+              flexDirection: 'column',
+              justifyContent: 'center',
+              lineHeight: 1,
+            }}
+          >
+            <Typography
+              component="span"
+              sx={{ fontSize: 17, lineHeight: '19px', fontWeight: 700, letterSpacing: '-0.02em' }}
+            >
+              Cuadros
+            </Typography>
+            <Typography
+              component="span"
+              sx={{ fontSize: 13, lineHeight: '15px', fontWeight: 400, whiteSpace: 'nowrap' }}
+            >
+              de viaje
+            </Typography>
+          </Box>
+
+          <Box
+            sx={{
+              display: { xs: 'none', sm: 'flex' },
+              alignItems: 'baseline',
+              minWidth: 0,
+              gap: 0.75,
+              whiteSpace: 'nowrap',
+            }}
+          >
+            <Typography
+              component="span"
+              sx={{ fontSize: 25, lineHeight: 1, fontWeight: 700, letterSpacing: '-0.025em' }}
+            >
+              Cuadros
+            </Typography>
+            <Typography component="span" sx={{ fontSize: 16, lineHeight: 1, fontWeight: 400 }}>
+              de viaje
+            </Typography>
+          </Box>
+        </Box>
 
         <IconButton
           size="small"
@@ -58,14 +106,23 @@ export function AppHeader() {
 
         {user ? (
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            <Typography variant="body2" sx={{ maxWidth: 150, overflow: 'hidden', textOverflow: 'ellipsis' }}>
+            <Typography
+              variant="body2"
+              sx={{
+                display: { xs: 'none', md: 'block' },
+                maxWidth: 150,
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+              }}
+            >
               {user.nombre} {user.apellido}
             </Typography>
             <Avatar
+              aria-label={`Cuenta de ${user.nombre} ${user.apellido}`}
               sx={{ cursor: 'pointer', bgcolor: 'primary.main', width: 36, height: 36 }}
               onClick={handleMenuOpen}
             >
-              {getInitials()}
+              {getUserInitials(user.nombre, user.apellido)}
             </Avatar>
             <Menu
               anchorEl={anchorEl}

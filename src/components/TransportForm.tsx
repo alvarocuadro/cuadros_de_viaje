@@ -6,11 +6,22 @@ import {
   CircularProgress,
   MenuItem,
   Typography,
+  Alert,
+  Checkbox,
+  FormControlLabel,
 } from '@mui/material'
 import { DateInput } from '@/components/ui'
-import { isEndAfterStart, isWithinTwoYears, getMaxTripYearsMessage, getMinDate, getMaxDate, isFutureOrToday } from '@/utils/dateValidation'
+import {
+  isEndAfterStart,
+  isWithinTwoYears,
+  getMaxTripYearsMessage,
+  getMinDate,
+  getMaxDate,
+  isFutureOrToday,
+} from '@/utils/dateValidation'
 import { BookingDataFields } from './BookingDataFields'
 import { AviationAutocomplete } from './AviationAutocomplete'
+import { lookupFlight } from '@/services/flightLookupService'
 import type { ItemTransporte, TipoTransporte, DatosReserva } from '@/types/items'
 
 const TIPOS_TRANSPORTE: TipoTransporte[] = ['avión', 'tren', 'micro']
@@ -23,7 +34,12 @@ interface TransportFormProps {
   loading?: boolean
 }
 
-export function TransportForm({ initialData, onSubmit, onCancel, loading = false }: TransportFormProps) {
+export function TransportForm({
+  initialData,
+  onSubmit,
+  onCancel,
+  loading = false,
+}: TransportFormProps) {
   const [tipo, setTipo] = useState<TipoTransporte>(initialData?.tipo || 'avión')
   const [compañia, setCompania] = useState(initialData?.compañia || '')
   const [origen, setOrigen] = useState(initialData?.origen || '')
@@ -39,9 +55,13 @@ export function TransportForm({ initialData, onSubmit, onCancel, loading = false
     initialData?.datos_reserva || {
       reservado_por_agencia: false,
       codigos_reserva: [],
-    },
+    }
   )
   const [errors, setErrors] = useState<Record<string, string>>({})
+  const [tieneNumeroVuelo, setTieneNumeroVuelo] = useState(false)
+  const [buscandoVuelo, setBuscandoVuelo] = useState(false)
+  const [lookupError, setLookupError] = useState('')
+  const [lookupMessage, setLookupMessage] = useState('')
   const esAvion = tipo === 'avión'
 
   const validateForm = () => {
@@ -56,9 +76,11 @@ export function TransportForm({ initialData, onSubmit, onCancel, loading = false
     if (!fechaLlegada) newErrors.fechaLlegada = 'Fecha de llegada requerida'
     if (!horaLlegada) newErrors.horaLlegada = 'Hora de llegada requerida'
     if (!REGEX_HH_MM.test(horaLlegada)) newErrors.horaLlegada = 'Formato: HH:mm'
-    if (!numeroServicio.trim()) newErrors.numeroServicio = 'Número de servicio requerido'
-    if (!numeroReserva.trim()) newErrors.numeroReserva = 'Número de reserva requerido'
-
+    if (!numeroServicio.trim()) {
+      newErrors.numeroServicio = esAvion
+        ? 'Número de vuelo requerido'
+        : 'Número de servicio requerido'
+    }
     if (fechaSalida && !isWithinTwoYears(fechaSalida)) {
       newErrors.fechaSalida = getMaxTripYearsMessage()
     } else if (fechaSalida && !isFutureOrToday(fechaSalida)) {
@@ -99,7 +121,7 @@ export function TransportForm({ initialData, onSubmit, onCancel, loading = false
       fecha_llegada: fechaLlegada,
       hora_llegada: horaLlegada,
       numero_servicio: numeroServicio.trim(),
-      numero_reserva: numeroReserva.trim(),
+      numero_reserva: numeroReserva.trim().toUpperCase() || undefined,
       asiento: asiento.trim() || undefined,
       datos_reserva: datosReserva,
     }
@@ -115,6 +137,79 @@ export function TransportForm({ initialData, onSubmit, onCancel, loading = false
     })
   }
 
+  const handleFechaSalidaChange = (newValue: string) => {
+    setFechaSalida(newValue)
+    setErrors((previousErrors) => {
+      const newErrors = { ...previousErrors }
+
+      if (!newValue) {
+        delete newErrors.fechaSalida
+      } else if (!isWithinTwoYears(newValue)) {
+        newErrors.fechaSalida = getMaxTripYearsMessage()
+      } else if (!isFutureOrToday(newValue)) {
+        newErrors.fechaSalida = 'La fecha no puede ser pasada'
+      } else {
+        delete newErrors.fechaSalida
+      }
+
+      return newErrors
+    })
+  }
+
+  const handleLookupFlight = async () => {
+    setLookupError('')
+    setLookupMessage('')
+
+    if (!numeroServicio.trim() || !fechaSalida) {
+      setLookupError('Ingresá el número de vuelo y la fecha de salida')
+      return
+    }
+
+    setBuscandoVuelo(true)
+
+    try {
+      const flights = await lookupFlight(numeroServicio, fechaSalida)
+      const flight = flights[0]
+
+      if (!flight) {
+        setLookupError('No encontramos ese vuelo para la fecha indicada')
+        return
+      }
+
+      setNumeroServicio(flight.flightNumber)
+      setCompania(flight.airlineName)
+      setOrigen(flight.departure.airport)
+      setDestino(flight.arrival.airport)
+      setFechaSalida(flight.departure.date || fechaSalida)
+      setHoraSalida(flight.departure.time)
+      setFechaLlegada(flight.arrival.date)
+      setHoraLlegada(flight.arrival.time)
+      setErrors((previousErrors) => {
+        const newErrors = { ...previousErrors }
+        ;[
+          'numeroServicio',
+          'compañia',
+          'origen',
+          'destino',
+          'fechaSalida',
+          'horaSalida',
+          'fechaLlegada',
+          'horaLlegada',
+        ].forEach((field) => delete newErrors[field])
+        return newErrors
+      })
+      setLookupMessage(
+        flights.length > 1
+          ? `Encontramos ${flights.length} tramos. Completamos el primero; podés corregir los datos.`
+          : 'Completamos los datos del vuelo. Podés corregirlos antes de guardar.'
+      )
+    } catch (error) {
+      setLookupError(error instanceof Error ? error.message : 'No se pudo consultar el vuelo')
+    } finally {
+      setBuscandoVuelo(false)
+    }
+  }
+
   return (
     <Box component="form" onSubmit={handleSubmit}>
       <TextField
@@ -122,7 +217,11 @@ export function TransportForm({ initialData, onSubmit, onCancel, loading = false
         fullWidth
         label="Tipo de Transporte"
         value={tipo}
-        onChange={(e) => setTipo(e.target.value as TipoTransporte)}
+        onChange={(e) => {
+          const newTipo = e.target.value as TipoTransporte
+          setTipo(newTipo)
+          if (newTipo !== 'avión') setTieneNumeroVuelo(false)
+        }}
         disabled={loading}
         sx={{ mb: 2 }}
       >
@@ -132,6 +231,80 @@ export function TransportForm({ initialData, onSubmit, onCancel, loading = false
           </MenuItem>
         ))}
       </TextField>
+
+      {esAvion && (
+        <Box sx={{ mb: 2 }}>
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={tieneNumeroVuelo}
+                onChange={(event) => {
+                  setTieneNumeroVuelo(event.target.checked)
+                  setLookupError('')
+                  setLookupMessage('')
+                }}
+                disabled={loading || buscandoVuelo}
+              />
+            }
+            label="Tengo el número de vuelo"
+          />
+
+          {tieneNumeroVuelo && (
+            <Box sx={{ mt: 1, p: 2, border: '1px solid', borderColor: 'divider', borderRadius: 2 }}>
+              <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 2 }}>
+                <TextField
+                  label="Número de vuelo"
+                  value={numeroServicio}
+                  onChange={(event) => {
+                    setNumeroServicio(event.target.value.toUpperCase())
+                    clearError('numeroServicio')
+                    setLookupError('')
+                    setLookupMessage('')
+                  }}
+                  error={!!errors.numeroServicio}
+                  helperText={errors.numeroServicio}
+                  disabled={loading || buscandoVuelo}
+                  placeholder="Ej. LA8180"
+                />
+                <DateInput
+                  label="Fecha de salida"
+                  value={fechaSalida}
+                  onChange={(newValue) => {
+                    handleFechaSalidaChange(newValue)
+                    setLookupError('')
+                    setLookupMessage('')
+                  }}
+                  error={!!errors.fechaSalida}
+                  helperText={errors.fechaSalida}
+                  disabled={loading || buscandoVuelo}
+                  fullWidth
+                  min={getMinDate()}
+                  max={getMaxDate()}
+                />
+              </Box>
+              <Button
+                fullWidth
+                variant="outlined"
+                onClick={handleLookupFlight}
+                disabled={loading || buscandoVuelo || !numeroServicio.trim() || !fechaSalida}
+                sx={{ mt: 2 }}
+              >
+                {buscandoVuelo ? <CircularProgress size={22} /> : 'Buscar datos del vuelo'}
+              </Button>
+              {lookupError && (
+                <Alert severity="error" sx={{ mt: 2 }}>
+                  {lookupError}
+                </Alert>
+              )}
+              {lookupMessage && (
+                <Alert severity="success" sx={{ mt: 2 }}>
+                  {lookupMessage}
+                </Alert>
+              )}
+            </Box>
+          )}
+        </Box>
+      )}
 
       <Box sx={{ mb: 2 }}>
         {esAvion ? (
@@ -221,32 +394,27 @@ export function TransportForm({ initialData, onSubmit, onCancel, loading = false
       <Typography variant="subtitle2" sx={{ mt: 3, mb: 1 }}>
         Salida
       </Typography>
-      <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 2, mb: 2 }}>
-        <DateInput
-          label="Fecha"
-          value={fechaSalida}
-          onChange={(newValue) => {
-            setFechaSalida(newValue)
-
-            const newErrors = { ...errors }
-            if (!newValue) {
-              delete newErrors.fechaSalida
-            } else if (!isWithinTwoYears(newValue)) {
-              newErrors.fechaSalida = getMaxTripYearsMessage()
-            } else if (!isFutureOrToday(newValue)) {
-              newErrors.fechaSalida = 'La fecha no puede ser pasada'
-            } else {
-              delete newErrors.fechaSalida
-            }
-            setErrors(newErrors)
-          }}
-          error={!!errors.fechaSalida}
-          helperText={errors.fechaSalida}
-          disabled={loading}
-          fullWidth
-          min={getMinDate()}
-          max={getMaxDate()}
-        />
+      <Box
+        sx={{
+          display: 'grid',
+          gridTemplateColumns: esAvion && tieneNumeroVuelo ? '1fr' : '1fr 1fr',
+          gap: 2,
+          mb: 2,
+        }}
+      >
+        {(!esAvion || !tieneNumeroVuelo) && (
+          <DateInput
+            label="Fecha"
+            value={fechaSalida}
+            onChange={handleFechaSalidaChange}
+            error={!!errors.fechaSalida}
+            helperText={errors.fechaSalida}
+            disabled={loading}
+            fullWidth
+            min={getMinDate()}
+            max={getMaxDate()}
+          />
+        )}
         <TextField
           label="Hora"
           value={horaSalida}
@@ -306,28 +474,38 @@ export function TransportForm({ initialData, onSubmit, onCancel, loading = false
         />
       </Box>
 
-      <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 2, mb: 2 }}>
+      <Box
+        sx={{
+          display: 'grid',
+          gridTemplateColumns: esAvion && tieneNumeroVuelo ? '1fr' : '1fr 1fr',
+          gap: 2,
+          mb: 2,
+        }}
+      >
+        {(!esAvion || !tieneNumeroVuelo) && (
+          <TextField
+            label={esAvion ? 'Número de vuelo' : 'Número de servicio'}
+            value={numeroServicio}
+            onChange={(e) => {
+              setNumeroServicio(esAvion ? e.target.value.toUpperCase() : e.target.value)
+              clearError('numeroServicio')
+            }}
+            error={!!errors.numeroServicio}
+            helperText={errors.numeroServicio}
+            disabled={loading}
+          />
+        )}
         <TextField
-          label="Número de Servicio"
-          value={numeroServicio}
-          onChange={(e) => {
-            setNumeroServicio(e.target.value)
-            clearError('numeroServicio')
-          }}
-          error={!!errors.numeroServicio}
-          helperText={errors.numeroServicio}
-          disabled={loading}
-        />
-        <TextField
-          label="Número de Reserva"
+          label="Código de reserva (opcional)"
           value={numeroReserva}
           onChange={(e) => {
-            setNumeroReserva(e.target.value)
+            setNumeroReserva(e.target.value.toUpperCase())
             clearError('numeroReserva')
           }}
           error={!!errors.numeroReserva}
           helperText={errors.numeroReserva}
           disabled={loading}
+          inputProps={{ maxLength: 50 }}
         />
       </Box>
 

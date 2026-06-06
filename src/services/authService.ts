@@ -191,6 +191,7 @@ export async function requestMagicLink(email: string): Promise<AuthResponse> {
       email,
       options: {
         shouldCreateUser: false,
+        emailRedirectTo: `${window.location.origin}/dashboard`,
       },
     })
 

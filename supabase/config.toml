@@ -1,0 +1,4 @@
+project_id = "cuadros_de_viaje"
+
+[functions.flight-lookup]
+verify_jwt = true

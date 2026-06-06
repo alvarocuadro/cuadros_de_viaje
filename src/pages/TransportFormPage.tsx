@@ -1,8 +1,12 @@
 import { useNavigate, useParams } from 'react-router-dom'
-import { Container, Box, Typography, Paper, Alert } from '@mui/material'
-import { useState } from 'react'
+import { Container, Box, Typography, Paper, Alert, CircularProgress } from '@mui/material'
+import { useEffect, useState } from 'react'
 import { TransportForm } from '@/components/TransportForm'
-import { createTransporte, updateTransporte } from '@/services/itemsService'
+import {
+  createTransporte,
+  getTransporteById,
+  updateTransporte,
+} from '@/services/itemsService'
 import { useSnackbar } from '@/context/SnackbarContext'
 import type { ItemTransporte } from '@/types/items'
 
@@ -11,7 +15,39 @@ export function TransportFormPage() {
   const { viajeId, itemId } = useParams<{ viajeId: string; itemId?: string }>()
   const snackbar = useSnackbar()
   const [loading, setLoading] = useState(false)
+  const [loadingItem, setLoadingItem] = useState(Boolean(itemId))
+  const [initialData, setInitialData] = useState<ItemTransporte>()
   const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    if (!viajeId || !itemId) {
+      setLoadingItem(false)
+      return
+    }
+
+    let active = true
+
+    const loadItem = async () => {
+      setLoadingItem(true)
+      setError(null)
+      const response = await getTransporteById(viajeId, itemId)
+
+      if (!active) return
+
+      if (response.success && response.data) {
+        setInitialData(response.data)
+      } else {
+        setError(response.error?.message || 'No se pudo cargar el transporte')
+      }
+      setLoadingItem(false)
+    }
+
+    loadItem()
+
+    return () => {
+      active = false
+    }
+  }, [itemId, viajeId])
 
   const handleSubmit = async (item: Omit<ItemTransporte, 'id' | 'created_at' | 'updated_at'>) => {
     if (!viajeId) return
@@ -20,7 +56,9 @@ export function TransportFormPage() {
     setError(null)
 
     try {
-      const { viaje_id, ...itemWithoutViajeId } = item
+      const itemWithoutViajeId = Object.fromEntries(
+        Object.entries(item).filter(([key]) => key !== 'viaje_id'),
+      ) as Omit<typeof item, 'viaje_id'>
 
       if (itemId) {
         const response = await updateTransporte(itemId, itemWithoutViajeId)
@@ -73,13 +111,20 @@ export function TransportFormPage() {
           </Alert>
         )}
 
-        <Paper sx={{ p: 3 }}>
-          <TransportForm
-            onSubmit={handleSubmit}
-            onCancel={() => navigate(`/trips/${viajeId}`)}
-            loading={loading}
-          />
-        </Paper>
+        {loadingItem ? (
+          <Box sx={{ display: 'flex', justifyContent: 'center', py: 8 }}>
+            <CircularProgress />
+          </Box>
+        ) : itemId && !initialData ? null : (
+          <Paper sx={{ p: 3 }}>
+            <TransportForm
+              initialData={initialData}
+              onSubmit={handleSubmit}
+              onCancel={() => navigate(`/trips/${viajeId}`)}
+              loading={loading}
+            />
+          </Paper>
+        )}
       </Box>
     </Container>
   )

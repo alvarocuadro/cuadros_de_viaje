@@ -1,4 +1,6 @@
 import React from 'react'
+import darkLogo from '@/assets/logo-dark.png'
+import { useAppTheme } from '@/context/ThemeContext'
 
 interface LogoProps {
   width?: number | string
@@ -8,6 +10,21 @@ interface LogoProps {
 }
 
 export function Logo({ width = 64, height = 64, className, style }: LogoProps) {
+  const { mode } = useAppTheme()
+
+  if (mode === 'dark') {
+    return (
+      <img
+        src={darkLogo}
+        width={width}
+        height={height}
+        alt="Cuadros de viaje"
+        className={className}
+        style={{ display: 'block', objectFit: 'contain', ...style }}
+      />
+    )
+  }
+
   return (
     <svg
       width={width}

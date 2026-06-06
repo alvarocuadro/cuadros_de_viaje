@@ -1,8 +1,12 @@
 import { useNavigate, useParams } from 'react-router-dom'
-import { Container, Box, Typography, Paper, Alert } from '@mui/material'
-import { useState } from 'react'
+import { Container, Box, Typography, Paper, Alert, CircularProgress } from '@mui/material'
+import { useEffect, useState } from 'react'
 import { AccommodationForm } from '@/components/AccommodationForm'
-import { createHospedaje, updateHospedaje } from '@/services/itemsService'
+import {
+  createHospedaje,
+  getHospedajeById,
+  updateHospedaje,
+} from '@/services/itemsService'
 import { useSnackbar } from '@/context/SnackbarContext'
 import type { ItemHospedaje } from '@/types/items'
 
@@ -11,7 +15,39 @@ export function AccommodationFormPage() {
   const { viajeId, itemId } = useParams<{ viajeId: string; itemId?: string }>()
   const snackbar = useSnackbar()
   const [loading, setLoading] = useState(false)
+  const [loadingItem, setLoadingItem] = useState(Boolean(itemId))
+  const [initialData, setInitialData] = useState<ItemHospedaje>()
   const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    if (!viajeId || !itemId) {
+      setLoadingItem(false)
+      return
+    }
+
+    let active = true
+
+    const loadItem = async () => {
+      setLoadingItem(true)
+      setError(null)
+      const response = await getHospedajeById(viajeId, itemId)
+
+      if (!active) return
+
+      if (response.success && response.data) {
+        setInitialData(response.data)
+      } else {
+        setError(response.error?.message || 'No se pudo cargar el hospedaje')
+      }
+      setLoadingItem(false)
+    }
+
+    loadItem()
+
+    return () => {
+      active = false
+    }
+  }, [itemId, viajeId])
 
   const handleSubmit = async (item: Omit<ItemHospedaje, 'id' | 'created_at' | 'updated_at'>) => {
     if (!viajeId) return
@@ -20,7 +56,9 @@ export function AccommodationFormPage() {
     setError(null)
 
     try {
-      const { viaje_id, ...itemWithoutViajeId } = item
+      const itemWithoutViajeId = Object.fromEntries(
+        Object.entries(item).filter(([key]) => key !== 'viaje_id'),
+      ) as Omit<typeof item, 'viaje_id'>
 
       if (itemId) {
         const response = await updateHospedaje(itemId, itemWithoutViajeId)
@@ -73,13 +111,20 @@ export function AccommodationFormPage() {
           </Alert>
         )}
 
-        <Paper sx={{ p: 3 }}>
-          <AccommodationForm
-            onSubmit={handleSubmit}
-            onCancel={() => navigate(`/trips/${viajeId}`)}
-            loading={loading}
-          />
-        </Paper>
+        {loadingItem ? (
+          <Box sx={{ display: 'flex', justifyContent: 'center', py: 8 }}>
+            <CircularProgress />
+          </Box>
+        ) : itemId && !initialData ? null : (
+          <Paper sx={{ p: 3 }}>
+            <AccommodationForm
+              initialData={initialData}
+              onSubmit={handleSubmit}
+              onCancel={() => navigate(`/trips/${viajeId}`)}
+              loading={loading}
+            />
+          </Paper>
+        )}
       </Box>
     </Container>
   )

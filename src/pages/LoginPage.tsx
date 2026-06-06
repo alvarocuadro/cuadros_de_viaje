@@ -91,19 +91,37 @@ export function LoginPage() {
           </Button>
         </Box>
 
-        <Typography variant="body2" sx={{ textAlign: 'center' }}>
-          ¿Sin cuenta?{' '}
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'baseline',
+            justifyContent: 'center',
+            gap: 0.5,
+          }}
+        >
+          <Typography variant="body2">¿Sin cuenta?</Typography>
           <Link
             component="button"
             variant="body2"
+            type="button"
             onClick={(e) => {
               e.preventDefault()
               navigate('/register')
             }}
+            sx={{
+              display: 'inline',
+              p: 0,
+              border: 0,
+              font: 'inherit',
+              lineHeight: 'inherit',
+              verticalAlign: 'baseline',
+              backgroundColor: 'transparent',
+              cursor: 'pointer',
+            }}
           >
             Registrate aquí
           </Link>
-        </Typography>
+        </Box>
       </Box>
     </Container>
   )

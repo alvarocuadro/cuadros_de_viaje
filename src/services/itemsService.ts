@@ -122,6 +122,37 @@ export async function getTransporte(viajeId: string): Promise<ItemResponse<ItemT
   }
 }
 
+export async function getTransporteById(
+  viajeId: string,
+  itemId: string,
+): Promise<ItemResponse<ItemTransporte>> {
+  try {
+    const { data, error } = await supabase
+      .from('items_transporte')
+      .select('*')
+      .eq('id', itemId)
+      .eq('viaje_id', viajeId)
+      .single()
+
+    if (error) {
+      return {
+        success: false,
+        error: { code: error.code || 'query_error', message: error.message },
+      }
+    }
+
+    return { success: true, data: data as ItemTransporte }
+  } catch (err) {
+    return {
+      success: false,
+      error: {
+        code: 'unknown_error',
+        message: err instanceof Error ? err.message : 'Error desconocido',
+      },
+    }
+  }
+}
+
 export async function createHospedaje(
   viajeId: string,
   item: Omit<ItemHospedaje, 'id' | 'viaje_id' | 'created_at' | 'updated_at'>,
@@ -225,6 +256,37 @@ export async function getHospedaje(viajeId: string): Promise<ItemResponse<ItemHo
     }
 
     return { success: true, data: (data || []) as ItemHospedaje[] }
+  } catch (err) {
+    return {
+      success: false,
+      error: {
+        code: 'unknown_error',
+        message: err instanceof Error ? err.message : 'Error desconocido',
+      },
+    }
+  }
+}
+
+export async function getHospedajeById(
+  viajeId: string,
+  itemId: string,
+): Promise<ItemResponse<ItemHospedaje>> {
+  try {
+    const { data, error } = await supabase
+      .from('items_hospedaje')
+      .select('*')
+      .eq('id', itemId)
+      .eq('viaje_id', viajeId)
+      .single()
+
+    if (error) {
+      return {
+        success: false,
+        error: { code: error.code || 'query_error', message: error.message },
+      }
+    }
+
+    return { success: true, data: data as ItemHospedaje }
   } catch (err) {
     return {
       success: false,

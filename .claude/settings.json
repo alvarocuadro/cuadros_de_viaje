@@ -20,7 +20,12 @@
       "Bash(Select-Object -ExpandProperty FullName)",
       "Bash(Get-ChildItem -Path \"c:\\\\Users\\\\babom\\\\OneDrive\\\\Documents\\\\GitHub\\\\cuadros_de_viaje\\\\src\" -Recurse -Depth 2)",
       "Bash(Select-Object -Property FullName)",
-      "Bash(git commit -m 'docs: Agregar DESIGN_SYSTEM_STATUS.md con resumen final *)"
+      "Bash(git commit -m 'docs: Agregar DESIGN_SYSTEM_STATUS.md con resumen final *)",
+      "Bash(xargs grep -l \"supabase\")",
+      "Bash(npx --yes kill-port 5173)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:5173/)",
+      "Bash(npx playwright *)",
+      "Bash(Remove-Item verify-input.cjs, verify-input.js, verify-destino-input.cjs, verify-label-screenshot.png, verify-filled-label.png, verify-empty-label.png -ErrorAction SilentlyContinue)"
     ],
     "additionalDirectories": [
       "c:\\Users\\babom\\OneDrive\\Documents\\GitHub\\cuadros_de_viaje\\.claude"

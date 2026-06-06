@@ -1,5 +1,6 @@
 export { Button } from './Button'
 export { Input } from './Input'
+export { DateInput } from './DateInput'
 export { Card } from './Card'
 export { Badge } from './Badge'
 export { Modal } from './Modal'

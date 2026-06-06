@@ -144,7 +144,7 @@ export const lightTheme = createTheme({
             },
             '&.Mui-focused fieldset': {
               borderColor: 'var(--color-brand)',
-              boxShadow: 'var(--color-focus-ring)',
+              borderWidth: '2px',
             },
             '&.Mui-error fieldset': {
               borderColor: 'var(--color-error)',

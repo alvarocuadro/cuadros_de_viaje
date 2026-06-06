@@ -7,6 +7,7 @@ import {
   MenuItem,
   Typography,
 } from '@mui/material'
+import { DateInput } from '@/components/ui'
 import { isEndAfterStart, isWithinTwoYears, getMaxTripYearsMessage, getMinDate, getMaxDate, isFutureOrToday } from '@/utils/dateValidation'
 import { BookingDataFields } from './BookingDataFields'
 import type { ItemHospedaje, TipoHospedaje, DatosReserva } from '@/types/items'
@@ -48,10 +49,14 @@ export function AccommodationForm({ initialData, onSubmit, onCancel, loading = f
 
     if (fechaCheckin && !isWithinTwoYears(fechaCheckin)) {
       newErrors.fechaCheckin = getMaxTripYearsMessage()
+    } else if (fechaCheckin && !isFutureOrToday(fechaCheckin)) {
+      newErrors.fechaCheckin = 'La fecha no puede ser pasada'
     }
 
     if (fechaCheckout && !isWithinTwoYears(fechaCheckout)) {
       newErrors.fechaCheckout = getMaxTripYearsMessage()
+    } else if (fechaCheckout && !isFutureOrToday(fechaCheckout)) {
+      newErrors.fechaCheckout = 'La fecha no puede ser pasada'
     }
 
     if (fechaCheckin && fechaCheckout && !isEndAfterStart(fechaCheckin, fechaCheckout)) {
@@ -132,12 +137,10 @@ export function AccommodationForm({ initialData, onSubmit, onCancel, loading = f
       />
 
       <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 2, mb: 2 }}>
-        <TextField
-          type="date"
+        <DateInput
           label="Check-in"
           value={fechaCheckin}
-          onChange={(e) => {
-            const newValue = e.target.value
+          onChange={(newValue) => {
             setFechaCheckin(newValue)
 
             const newErrors = { ...errors }
@@ -155,15 +158,14 @@ export function AccommodationForm({ initialData, onSubmit, onCancel, loading = f
           error={!!errors.fechaCheckin}
           helperText={errors.fechaCheckin}
           disabled={loading}
-          InputLabelProps={{ shrink: true }}
-          inputProps={{ min: getMinDate(), max: getMaxDate() }}
+          fullWidth
+          min={getMinDate()}
+          max={getMaxDate()}
         />
-        <TextField
-          type="date"
+        <DateInput
           label="Check-out"
           value={fechaCheckout}
-          onChange={(e) => {
-            const newValue = e.target.value
+          onChange={(newValue) => {
             setFechaCheckout(newValue)
 
             const newErrors = { ...errors }
@@ -183,8 +185,9 @@ export function AccommodationForm({ initialData, onSubmit, onCancel, loading = f
           error={!!errors.fechaCheckout}
           helperText={errors.fechaCheckout}
           disabled={loading}
-          InputLabelProps={{ shrink: true }}
-          inputProps={{ min: getMinDate(), max: getMaxDate() }}
+          fullWidth
+          min={getMinDate()}
+          max={getMaxDate()}
         />
       </Box>
 

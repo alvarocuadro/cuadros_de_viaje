@@ -7,6 +7,7 @@ import {
   MenuItem,
   Typography,
 } from '@mui/material'
+import { DateInput } from '@/components/ui'
 import { isEndAfterStart, isWithinTwoYears, getMaxTripYearsMessage, getMinDate, getMaxDate, isFutureOrToday } from '@/utils/dateValidation'
 import { BookingDataFields } from './BookingDataFields'
 import type { ItemTransporte, TipoTransporte, DatosReserva } from '@/types/items'
@@ -58,10 +59,14 @@ export function TransportForm({ initialData, onSubmit, onCancel, loading = false
 
     if (fechaSalida && !isWithinTwoYears(fechaSalida)) {
       newErrors.fechaSalida = getMaxTripYearsMessage()
+    } else if (fechaSalida && !isFutureOrToday(fechaSalida)) {
+      newErrors.fechaSalida = 'La fecha no puede ser pasada'
     }
 
     if (fechaLlegada && !isWithinTwoYears(fechaLlegada)) {
       newErrors.fechaLlegada = getMaxTripYearsMessage()
+    } else if (fechaLlegada && !isFutureOrToday(fechaLlegada)) {
+      newErrors.fechaLlegada = 'La fecha no puede ser pasada'
     }
 
     if (fechaSalida && fechaLlegada && !isEndAfterStart(fechaSalida, fechaLlegada)) {
@@ -169,12 +174,10 @@ export function TransportForm({ initialData, onSubmit, onCancel, loading = false
         Salida
       </Typography>
       <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 2, mb: 2 }}>
-        <TextField
-          type="date"
+        <DateInput
           label="Fecha"
           value={fechaSalida}
-          onChange={(e) => {
-            const newValue = e.target.value
+          onChange={(newValue) => {
             setFechaSalida(newValue)
 
             const newErrors = { ...errors }
@@ -192,8 +195,9 @@ export function TransportForm({ initialData, onSubmit, onCancel, loading = false
           error={!!errors.fechaSalida}
           helperText={errors.fechaSalida}
           disabled={loading}
-          InputLabelProps={{ shrink: true }}
-          inputProps={{ min: getMinDate(), max: getMaxDate() }}
+          fullWidth
+          min={getMinDate()}
+          max={getMaxDate()}
         />
         <TextField
           label="Hora"
@@ -213,12 +217,10 @@ export function TransportForm({ initialData, onSubmit, onCancel, loading = false
         Llegada
       </Typography>
       <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 2, mb: 2 }}>
-        <TextField
-          type="date"
+        <DateInput
           label="Fecha"
           value={fechaLlegada}
-          onChange={(e) => {
-            const newValue = e.target.value
+          onChange={(newValue) => {
             setFechaLlegada(newValue)
 
             const newErrors = { ...errors }
@@ -238,8 +240,9 @@ export function TransportForm({ initialData, onSubmit, onCancel, loading = false
           error={!!errors.fechaLlegada}
           helperText={errors.fechaLlegada}
           disabled={loading}
-          InputLabelProps={{ shrink: true }}
-          inputProps={{ min: getMinDate(), max: getMaxDate() }}
+          fullWidth
+          min={getMinDate()}
+          max={getMaxDate()}
         />
         <TextField
           label="Hora"

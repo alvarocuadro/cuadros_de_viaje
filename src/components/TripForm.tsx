@@ -1,6 +1,8 @@
 import { useState } from 'react'
-import { Box, Typography, CircularProgress } from '@mui/material'
-import { Input, Button } from '@/components/ui'
+import { Add as AddIcon } from '@mui/icons-material'
+import { Box, CircularProgress, IconButton, Tooltip } from '@mui/material'
+import { Input, DateInput, Button } from '@/components/ui'
+import { DestinationAutocomplete } from '@/components/DestinationAutocomplete'
 import { isEndAfterStart, isFutureOrToday, isWithinTwoYears, getMaxTripYearsMessage, getMinDate, getMaxDate } from '@/utils/dateValidation'
 import type { ViajeConItems } from '@/types/trips'
 
@@ -49,9 +51,11 @@ export function TripForm({ initialData, onSubmit, onCancel, loading = false }: T
     return Object.keys(newErrors).length === 0
   }
 
-  const handleAddDestino = () => {
-    if (destinoInput.trim() && !destinos.includes(destinoInput.trim())) {
-      setDestinos([...destinos, destinoInput.trim()])
+  const handleAddDestino = (value = destinoInput) => {
+    const normalizedValue = value.trim()
+
+    if (normalizedValue && !destinos.includes(normalizedValue)) {
+      setDestinos([...destinos, normalizedValue])
       setDestinoInput('')
       if (errors.destinos) {
         setErrors((prev) => {
@@ -60,6 +64,8 @@ export function TripForm({ initialData, onSubmit, onCancel, loading = false }: T
           return newErrors
         })
       }
+    } else if (normalizedValue) {
+      setDestinoInput('')
     }
   }
 
@@ -102,42 +108,39 @@ export function TripForm({ initialData, onSubmit, onCancel, loading = false }: T
 
       {/* Destinations Section */}
       <Box>
-        <Typography variant="body2" sx={{ fontWeight: 600, mb: 1.5, color: 'text.secondary' }}>
-          Destinos
-        </Typography>
-        <Box sx={{ display: 'flex', gap: 1, mb: 2, alignItems: 'flex-start' }}>
-          <Input
-            placeholder="P. ej. París, Madrid"
+        <Box sx={{ display: 'flex', gap: 1, mb: destinos.length > 0 ? 2 : 0, alignItems: 'flex-start' }}>
+          <DestinationAutocomplete
             value={destinoInput}
-            onChange={(e) => setDestinoInput(e.target.value)}
-            onKeyPress={(e) => {
-              if (e.key === 'Enter') {
-                e.preventDefault()
-                handleAddDestino()
-              }
-            }}
+            onChange={setDestinoInput}
+            onAdd={handleAddDestino}
             disabled={loading}
-            fullWidth
-            size="small"
-            sx={{ mb: 0 }}
+            error={!!errors.destinos}
+            helperText={errors.destinos}
           />
-          <Button
-            variant="secondary"
-            onClick={handleAddDestino}
-            disabled={loading || !destinoInput.trim()}
-            sx={{
-              minWidth: '44px !important',
-              padding: '12px !important',
-              fontSize: '18px',
-              height: '48px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              flexShrink: 0,
-            }}
-          >
-            +
-          </Button>
+          <Tooltip title="Agregar destino">
+            <span>
+              <IconButton
+                aria-label="Agregar destino"
+                onClick={() => handleAddDestino()}
+                disabled={loading || !destinoInput.trim()}
+                sx={{
+                  width: 48,
+                  height: 48,
+                  flexShrink: 0,
+                  color: 'primary.main',
+                  border: '1px solid',
+                  borderColor: 'divider',
+                  backgroundColor: 'background.paper',
+                  '&:hover': {
+                    borderColor: 'primary.main',
+                    backgroundColor: 'action.hover',
+                  },
+                }}
+              >
+                <AddIcon />
+              </IconButton>
+            </span>
+          </Tooltip>
         </Box>
 
         {/* Destination Chips */}
@@ -185,22 +188,14 @@ export function TripForm({ initialData, onSubmit, onCancel, loading = false }: T
             ))}
           </Box>
         )}
-
-        {errors.destinos && (
-          <Typography sx={{ color: 'error.main', fontSize: '12px', mt: 0.75 }}>
-            {errors.destinos}
-          </Typography>
-        )}
       </Box>
 
       {/* Date Section */}
       <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, gap: 2 }}>
-        <Input
-          type="date"
+        <DateInput
           label="Fecha de inicio"
           value={fecha_inicio}
-          onChange={(e) => {
-            const newValue = e.target.value
+          onChange={(newValue) => {
             setFechaInicio(newValue)
 
             const newErrors = { ...errors }
@@ -219,14 +214,13 @@ export function TripForm({ initialData, onSubmit, onCancel, loading = false }: T
           helperText={errors.fecha_inicio}
           disabled={loading}
           fullWidth
-          inputProps={{ min: getMinDate(), max: getMaxDate() }}
+          min={getMinDate()}
+          max={getMaxDate()}
         />
-        <Input
-          type="date"
+        <DateInput
           label="Fecha de fin"
           value={fecha_fin}
-          onChange={(e) => {
-            const newValue = e.target.value
+          onChange={(newValue) => {
             setFechaFin(newValue)
 
             const newErrors = { ...errors }
@@ -247,7 +241,8 @@ export function TripForm({ initialData, onSubmit, onCancel, loading = false }: T
           helperText={errors.fecha_fin}
           disabled={loading}
           fullWidth
-          inputProps={{ min: getMinDate(), max: getMaxDate() }}
+          min={getMinDate()}
+          max={getMaxDate()}
         />
       </Box>
 

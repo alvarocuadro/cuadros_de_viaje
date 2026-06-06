@@ -8,37 +8,39 @@ const StyledTextField = styled(TextField)(({ theme }) => ({
     borderRadius: '12px',
     fontSize: '15px',
     backgroundColor: theme.palette.background.paper,
-    paddingTop: '8px',
 
     '& input::placeholder, & textarea::placeholder': {
       color: 'var(--color-fg-disabled)',
       opacity: 1,
     },
 
-    '&:focus-within': {
-      borderColor: 'var(--color-brand)',
-      boxShadow: 'var(--color-focus-ring)',
-    },
-
     '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
       borderColor: theme.palette.primary.main,
+      borderWidth: '2px',
     },
 
     '&.Mui-error .MuiOutlinedInput-notchedOutline': {
       borderColor: theme.palette.error.main,
     },
 
-    '&.Mui-error:focus-within': {
-      boxShadow: `0 0 0 3px var(--color-error-tint)`,
+    '&.Mui-error.Mui-focused .MuiOutlinedInput-notchedOutline': {
+      borderWidth: '2px',
     },
   },
 
-  '& .MuiOutlinedInput-input': {
-    padding: '12px 13px',
+  '& .MuiInputBase-input': {
+    paddingLeft: '20px !important',
+    paddingRight: '20px !important',
   },
 
-  '& .MuiOutlinedInput-inputMultiline': {
-    padding: '12px 13px',
+  '& .MuiOutlinedInput-input': {
+    paddingTop: '12px',
+    paddingBottom: '12px',
+  },
+
+  '& .MuiInputBase-inputSizeSmall': {
+    paddingTop: '10px',
+    paddingBottom: '10px',
   },
 
   '& .MuiFormHelperText-root': {
@@ -51,16 +53,11 @@ const StyledTextField = styled(TextField)(({ theme }) => ({
     },
   },
 
-  '& .MuiInputBase-formControl': {
-    display: 'flex',
-    flexDirection: 'column',
-  },
-
   '& label': {
     fontSize: '13px',
     fontWeight: 600,
     color: 'var(--color-fg2)',
-    transform: 'translate(14px, 16px) scale(1)',
+    transform: 'translate(20px, 16px) scale(1)',
     transformOrigin: 'top left',
     transition: 'all 200ms cubic-bezier(0, 0, 0.2, 1)',
 
@@ -73,8 +70,13 @@ const StyledTextField = styled(TextField)(({ theme }) => ({
     },
   },
 
-  '& label.Mui-focused, & label.MuiFormLabel-filled': {
-    transform: 'translate(14px, -9px) scale(0.75)',
+  '& label.Mui-focused, & label.MuiFormLabel-filled, & label.MuiInputLabel-shrink': {
+    transform: 'translate(20px, -9px) scale(0.75)',
+  },
+
+  '& .MuiOutlinedInput-notchedOutline legend span': {
+    paddingLeft: '6px',
+    paddingRight: '6px',
   },
 }))
 

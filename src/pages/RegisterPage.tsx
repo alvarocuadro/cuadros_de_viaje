@@ -1,16 +1,8 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import {
-  Box,
-  Container,
-  TextField,
-  Button,
-  Typography,
-  Alert,
-  Link,
-  CircularProgress,
-  MenuItem,
-} from '@mui/material'
+import { Box, Container, Typography, Alert, Link, CircularProgress, MenuItem } from '@mui/material'
+import { Input, Button } from '@/components/ui'
+import { Logo } from '@/components/Logo'
 import { register } from '@/services/authService'
 
 const COUNTRIES = ['Argentina', 'España', 'México', 'Colombia', 'Chile', 'Perú', 'Brasil', 'Otro']
@@ -81,18 +73,20 @@ export function RegisterPage() {
   return (
     <Container maxWidth="sm">
       <Box sx={{ mt: 8 }}>
-        <Typography variant="h4" sx={{ mb: 1 }}>
-          Crear cuenta
-        </Typography>
-        <Typography variant="body2" color="textSecondary" sx={{ mb: 3 }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 3 }}>
+          <Logo width={40} height={40} style={{ color: 'var(--color-brand)' }} />
+          <Typography variant="h4" sx={{ fontWeight: 700 }}>
+            Registrarse
+          </Typography>
+        </Box>
+        <Typography variant="body2" sx={{ color: 'text.secondary', mb: 3 }}>
           Completa tus datos para registrarte
         </Typography>
 
         {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
 
         <Box component="form" onSubmit={handleSubmit}>
-          <TextField
-            fullWidth
+          <Input
             label="Nombre"
             name="nombre"
             value={formData.nombre}
@@ -100,10 +94,10 @@ export function RegisterPage() {
             error={!!errors.nombre}
             helperText={errors.nombre}
             disabled={loading}
-            sx={{ mb: 2 }}
-          />
-          <TextField
             fullWidth
+            sx={{ mb: 3 }}
+          />
+          <Input
             label="Apellido"
             name="apellido"
             value={formData.apellido}
@@ -111,10 +105,10 @@ export function RegisterPage() {
             error={!!errors.apellido}
             helperText={errors.apellido}
             disabled={loading}
-            sx={{ mb: 2 }}
-          />
-          <TextField
             fullWidth
+            sx={{ mb: 3 }}
+          />
+          <Input
             select
             label="País"
             name="país"
@@ -123,16 +117,16 @@ export function RegisterPage() {
             error={!!errors.país}
             helperText={errors.país}
             disabled={loading}
-            sx={{ mb: 2 }}
+            fullWidth
+            sx={{ mb: 3 }}
           >
             {COUNTRIES.map((country) => (
               <MenuItem key={country} value={country}>
                 {country}
               </MenuItem>
             ))}
-          </TextField>
-          <TextField
-            fullWidth
+          </Input>
+          <Input
             label="Email"
             name="email"
             type="email"
@@ -141,14 +135,14 @@ export function RegisterPage() {
             error={!!errors.email}
             helperText={errors.email}
             disabled={loading}
-            sx={{ mb: 2 }}
+            fullWidth
+            sx={{ mb: 3 }}
           />
           <Button
-            fullWidth
-            variant="contained"
+            variant="primary"
             type="submit"
             disabled={loading}
-            sx={{ mb: 2 }}
+            sx={{ mb: 3, width: '100%' }}
           >
             {loading ? <CircularProgress size={24} /> : 'Registrarse'}
           </Button>

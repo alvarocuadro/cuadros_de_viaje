@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Box, Container, TextField, Button, Typography, Alert, Link, CircularProgress } from '@mui/material'
+import { Box, Container, Typography, Alert, Link, CircularProgress } from '@mui/material'
+import { Input, Button } from '@/components/ui'
+import { Logo } from '@/components/Logo'
 import { requestMagicLink } from '@/services/authService'
 
 export function LoginPage() {
@@ -34,15 +36,14 @@ export function LoginPage() {
     return (
       <Container maxWidth="sm">
         <Box sx={{ mt: 8, textAlign: 'center' }}>
-          <Typography variant="h5" sx={{ mb: 2 }}>
+          <Typography variant="h4" sx={{ mb: 2, fontWeight: 700 }}>
             ✓ Revisá tu correo
           </Typography>
-          <Typography variant="body1" color="textSecondary" sx={{ mb: 3 }}>
+          <Typography variant="body1" sx={{ mb: 3, color: 'text.secondary' }}>
             Te enviamos un enlace de acceso a <strong>{email}</strong>. Abrilo para ingresar.
           </Typography>
           <Button
-            fullWidth
-            variant="outlined"
+            variant="secondary"
             onClick={() => {
               setSent(false)
               setEmail('')
@@ -58,31 +59,33 @@ export function LoginPage() {
   return (
     <Container maxWidth="sm">
       <Box sx={{ mt: 8 }}>
-        <Typography variant="h4" sx={{ mb: 1 }}>
-          Acceder
-        </Typography>
-        <Typography variant="body2" color="textSecondary" sx={{ mb: 3 }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 3 }}>
+          <Logo width={40} height={40} style={{ color: 'var(--color-brand)' }} />
+          <Typography variant="h4" sx={{ fontWeight: 700 }}>
+            Acceder
+          </Typography>
+        </Box>
+        <Typography variant="body2" sx={{ color: 'text.secondary', mb: 3 }}>
           Ingresá tu email para recibir un enlace de acceso
         </Typography>
 
         {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
 
         <Box component="form" onSubmit={handleSubmit}>
-          <TextField
-            fullWidth
+          <Input
             label="Email"
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             disabled={loading}
-            sx={{ mb: 2 }}
+            fullWidth
+            sx={{ mb: 3 }}
           />
           <Button
-            fullWidth
-            variant="contained"
-            type="submit"
+            variant="primary"
             disabled={loading || !email}
-            sx={{ mb: 2 }}
+            sx={{ mb: 3 }}
+            onClick={handleSubmit}
           >
             {loading ? <CircularProgress size={24} /> : 'Enviar enlace'}
           </Button>

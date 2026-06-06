@@ -1,7 +1,8 @@
 import { useNavigate } from 'react-router-dom'
-import { Container, Box, Typography, Fab, Alert } from '@mui/material'
+import { Container, Box, Typography, Alert } from '@mui/material'
 import AddIcon from '@mui/icons-material/Add'
 import { useState } from 'react'
+import { FAB } from '@/components/ui'
 import { TripGroup } from '@/components/TripGroup'
 import { TripDeleteDialog } from '@/components/TripDeleteDialog'
 import { EmptyState } from '@/components/EmptyState'
@@ -121,18 +122,11 @@ export function DashboardPage() {
         )}
       </Box>
 
-      <Fab
-        color="primary"
-        aria-label="add"
+      <FAB
+        icon={AddIcon}
         onClick={() => navigate('/trips/new')}
-        sx={{
-          position: 'fixed',
-          bottom: { xs: 80, sm: 32 },
-          right: 32,
-        }}
-      >
-        <AddIcon />
-      </Fab>
+        aria-label="Crear nuevo viaje"
+      />
 
       <TripDeleteDialog
         open={deleteDialog.open}

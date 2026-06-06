@@ -1,9 +1,10 @@
 import { useNavigate } from 'react-router-dom'
-import { Card, CardContent, Typography, Box, Chip, IconButton, Menu, MenuItem } from '@mui/material'
+import { Typography, Box, IconButton, Menu, MenuItem } from '@mui/material'
 import MoreVertIcon from '@mui/icons-material/MoreVert'
 import { useState } from 'react'
 import type { ViajeConItems } from '@/types/trips'
 import { formatDate } from '@/utils/formatters'
+import { Card, Badge } from '@/components/ui'
 
 interface TripCardProps {
   viaje: ViajeConItems
@@ -11,15 +12,15 @@ interface TripCardProps {
   onDelete?: (id: string) => void
 }
 
-const estadoColors: Record<string, 'default' | 'success' | 'warning' | 'error'> = {
-  pasado: 'default',
-  actual: 'success',
-  futuro: 'warning',
+const badgeVariants: Record<string, 'futuro' | 'actual' | 'pasado'> = {
+  pasado: 'pasado',
+  actual: 'actual',
+  futuro: 'futuro',
 }
 
 const estadoLabels: Record<string, string> = {
-  pasado: 'Pasado',
-  actual: 'Actual',
+  pasado: 'Completado',
+  actual: 'En curso',
   futuro: 'Próximo',
 }
 
@@ -52,20 +53,13 @@ export function TripCard({ viaje, onEdit, onDelete }: TripCardProps) {
 
   return (
     <Card
-      sx={{
-        mb: 2,
-        cursor: 'pointer',
-        transition: 'all 0.2s',
-        '&:hover': {
-          boxShadow: 3,
-          transform: 'translateY(-2px)',
-        },
-      }}
+      interactive
       onClick={handleCardClick}
+      sx={{ mb: 2 }}
     >
-      <CardContent>
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', mb: 1 }}>
-          <Typography variant="h6" sx={{ flex: 1, wordBreak: 'break-word' }}>
+      <Box sx={{ p: 2 }}>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', mb: 2 }}>
+          <Typography variant="h6" sx={{ flex: 1, wordBreak: 'break-word', fontWeight: 700 }}>
             {viaje.nombre}
           </Typography>
           <IconButton
@@ -77,26 +71,37 @@ export function TripCard({ viaje, onEdit, onDelete }: TripCardProps) {
           </IconButton>
         </Box>
 
-        <Box sx={{ mb: 2 }}>
+        <Box sx={{ mb: 2, display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
           {viaje.destinos.map((destino, i) => (
-            <Chip key={i} label={destino} size="small" sx={{ mr: 0.5, mb: 0.5 }} />
+            <Box key={i} sx={{
+              display: 'inline-block',
+              px: 1.5,
+              py: 0.5,
+              borderRadius: 'var(--border-radius-pill)',
+              backgroundColor: 'var(--color-surface-sunken)',
+              fontSize: '12.5px',
+              color: 'var(--color-fg2)',
+              border: '1px solid var(--color-border-subtle)',
+            }}>
+              {destino}
+            </Box>
           ))}
         </Box>
 
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <Typography variant="body2" color="textSecondary">
+          <Typography variant="body2" sx={{ color: 'text.secondary' }}>
             {viaje.fecha_inicio && viaje.fecha_fin
               ? `${formatDate(viaje.fecha_inicio)} → ${formatDate(viaje.fecha_fin)}`
               : 'Sin fechas'}
           </Typography>
-          <Chip
-            label={estadoLabels[viaje.estado]}
-            size="small"
-            color={estadoColors[viaje.estado]}
-            variant="filled"
-          />
+          <Badge
+            variant={badgeVariants[viaje.estado] || 'futuro'}
+            showDot
+          >
+            {estadoLabels[viaje.estado]}
+          </Badge>
         </Box>
-      </CardContent>
+      </Box>
 
       <Menu
         anchorEl={anchorEl}

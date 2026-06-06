@@ -1,17 +1,16 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom'
-import { ThemeProvider, CssBaseline } from '@mui/material'
-import { theme } from '@/theme'
+import { AppThemeProvider } from '@/context/ThemeContext'
 import App from './App'
+import '@/design/variables.css'
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <BrowserRouter>
+    <BrowserRouter>
+      <AppThemeProvider>
         <App />
-      </BrowserRouter>
-    </ThemeProvider>
+      </AppThemeProvider>
+    </BrowserRouter>
   </React.StrictMode>,
 )

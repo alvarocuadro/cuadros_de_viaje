@@ -1,4 +1,5 @@
 import dayjs from 'dayjs'
+import { MAX_TRIP_YEARS } from '@/config/constants'
 
 export function isFutureOrToday(fecha: string | null | undefined): boolean {
   if (!fecha) return true
@@ -69,4 +70,24 @@ export function isValidHHmm(hora: string): boolean {
 
 export function canEditDateField(fecha: string | null | undefined): boolean {
   return isFutureOrToday(fecha)
+}
+
+export function isWithinTwoYears(fecha: string | null | undefined): boolean {
+  if (!fecha) return true
+  const date = dayjs(fecha)
+  const maxDate = dayjs().add(MAX_TRIP_YEARS, 'year')
+  return date.isBefore(maxDate) || date.isSame(maxDate)
+}
+
+export function getMaxTripYearsMessage(): string {
+  const years = MAX_TRIP_YEARS === 1 ? 'año' : 'años'
+  return `Debe estar dentro de los próximos ${MAX_TRIP_YEARS} ${years}`
+}
+
+export function getMinDate(): string {
+  return dayjs().format('YYYY-MM-DD')
+}
+
+export function getMaxDate(): string {
+  return dayjs().add(MAX_TRIP_YEARS, 'year').format('YYYY-MM-DD')
 }

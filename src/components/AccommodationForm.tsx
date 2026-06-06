@@ -7,7 +7,7 @@ import {
   MenuItem,
   Typography,
 } from '@mui/material'
-import { isEndAfterStart } from '@/utils/dateValidation'
+import { isEndAfterStart, isWithinTwoYears, getMaxTripYearsMessage, getMinDate, getMaxDate, isFutureOrToday } from '@/utils/dateValidation'
 import { BookingDataFields } from './BookingDataFields'
 import type { ItemHospedaje, TipoHospedaje, DatosReserva } from '@/types/items'
 
@@ -45,6 +45,14 @@ export function AccommodationForm({ initialData, onSubmit, onCancel, loading = f
     if (!fechaCheckout) newErrors.fechaCheckout = 'Fecha de check-out requerida'
     if (!direccion.trim()) newErrors.direccion = 'Dirección requerida'
     if (!numeroReserva.trim()) newErrors.numeroReserva = 'Número de reserva requerido'
+
+    if (fechaCheckin && !isWithinTwoYears(fechaCheckin)) {
+      newErrors.fechaCheckin = getMaxTripYearsMessage()
+    }
+
+    if (fechaCheckout && !isWithinTwoYears(fechaCheckout)) {
+      newErrors.fechaCheckout = getMaxTripYearsMessage()
+    }
 
     if (fechaCheckin && fechaCheckout && !isEndAfterStart(fechaCheckin, fechaCheckout)) {
       newErrors.fechaCheckout = 'Debe ser igual o posterior a check-in'
@@ -129,26 +137,54 @@ export function AccommodationForm({ initialData, onSubmit, onCancel, loading = f
           label="Check-in"
           value={fechaCheckin}
           onChange={(e) => {
-            setFechaCheckin(e.target.value)
-            clearError('fechaCheckin')
+            const newValue = e.target.value
+            setFechaCheckin(newValue)
+
+            const newErrors = { ...errors }
+            if (!newValue) {
+              delete newErrors.fechaCheckin
+            } else if (!isWithinTwoYears(newValue)) {
+              newErrors.fechaCheckin = getMaxTripYearsMessage()
+            } else if (!isFutureOrToday(newValue)) {
+              newErrors.fechaCheckin = 'La fecha no puede ser pasada'
+            } else {
+              delete newErrors.fechaCheckin
+            }
+            setErrors(newErrors)
           }}
           error={!!errors.fechaCheckin}
           helperText={errors.fechaCheckin}
           disabled={loading}
           InputLabelProps={{ shrink: true }}
+          inputProps={{ min: getMinDate(), max: getMaxDate() }}
         />
         <TextField
           type="date"
           label="Check-out"
           value={fechaCheckout}
           onChange={(e) => {
-            setFechaCheckout(e.target.value)
-            clearError('fechaCheckout')
+            const newValue = e.target.value
+            setFechaCheckout(newValue)
+
+            const newErrors = { ...errors }
+            if (!newValue) {
+              delete newErrors.fechaCheckout
+            } else if (!isWithinTwoYears(newValue)) {
+              newErrors.fechaCheckout = getMaxTripYearsMessage()
+            } else if (!isFutureOrToday(newValue)) {
+              newErrors.fechaCheckout = 'La fecha no puede ser pasada'
+            } else if (fechaCheckin && !isEndAfterStart(fechaCheckin, newValue)) {
+              newErrors.fechaCheckout = 'Debe ser igual o posterior a check-in'
+            } else {
+              delete newErrors.fechaCheckout
+            }
+            setErrors(newErrors)
           }}
           error={!!errors.fechaCheckout}
           helperText={errors.fechaCheckout}
           disabled={loading}
           InputLabelProps={{ shrink: true }}
+          inputProps={{ min: getMinDate(), max: getMaxDate() }}
         />
       </Box>
 

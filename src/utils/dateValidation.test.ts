@@ -6,6 +6,7 @@ import {
   validateAccommodationDates,
   isValidHHmm,
   canEditDateField,
+  isWithinTwoYears,
 } from './dateValidation'
 import dayjs from 'dayjs'
 
@@ -157,6 +158,40 @@ describe('dateValidation', () => {
 
     it('permite edición cuando fecha es null', () => {
       expect(canEditDateField(null)).toBe(true)
+    })
+  })
+
+  describe('isWithinTwoYears', () => {
+    it('acepta fecha dentro de 2 años', () => {
+      const inOneYear = dayjs().add(1, 'year').format('YYYY-MM-DD')
+      expect(isWithinTwoYears(inOneYear)).toBe(true)
+    })
+
+    it('acepta fecha en exactamente 2 años', () => {
+      const inTwoYears = dayjs().add(2, 'year').format('YYYY-MM-DD')
+      expect(isWithinTwoYears(inTwoYears)).toBe(true)
+    })
+
+    it('rechaza fecha más allá de 2 años', () => {
+      const beyond2Years = dayjs().add(2, 'year').add(1, 'day').format('YYYY-MM-DD')
+      expect(isWithinTwoYears(beyond2Years)).toBe(false)
+    })
+
+    it('rechaza fecha en 2030 (fuera del rango)', () => {
+      expect(isWithinTwoYears('2030-10-01')).toBe(false)
+    })
+
+    it('acepta fecha de hoy', () => {
+      expect(isWithinTwoYears(today)).toBe(true)
+    })
+
+    it('acepta fecha mañana', () => {
+      expect(isWithinTwoYears(tomorrow)).toBe(true)
+    })
+
+    it('retorna true para null o undefined', () => {
+      expect(isWithinTwoYears(null)).toBe(true)
+      expect(isWithinTwoYears(undefined)).toBe(true)
     })
   })
 })

@@ -7,7 +7,7 @@ import {
   Typography,
   CircularProgress,
 } from '@mui/material'
-import { isEndAfterStart, isFutureOrToday } from '@/utils/dateValidation'
+import { isEndAfterStart, isFutureOrToday, isWithinTwoYears, getMaxTripYearsMessage, getMinDate, getMaxDate } from '@/utils/dateValidation'
 import type { ViajeConItems } from '@/types/trips'
 
 interface TripFormProps {
@@ -37,6 +37,14 @@ export function TripForm({ initialData, onSubmit, onCancel, loading = false }: T
 
     if (fecha_fin && !isFutureOrToday(fecha_fin)) {
       newErrors.fecha_fin = 'La fecha de fin no puede ser pasada'
+    }
+
+    if (fecha_inicio && !isWithinTwoYears(fecha_inicio)) {
+      newErrors.fecha_inicio = `La fecha de inicio ${getMaxTripYearsMessage()}`
+    }
+
+    if (fecha_fin && !isWithinTwoYears(fecha_fin)) {
+      newErrors.fecha_fin = `La fecha de fin ${getMaxTripYearsMessage()}`
     }
 
     if (fecha_inicio && fecha_fin && !isEndAfterStart(fecha_inicio, fecha_fin)) {
@@ -139,38 +147,54 @@ export function TripForm({ initialData, onSubmit, onCancel, loading = false }: T
           label="Fecha de inicio"
           value={fecha_inicio}
           onChange={(e) => {
-            setFechaInicio(e.target.value)
-            if (errors.fecha_inicio) {
-              setErrors((prev) => {
-                const newErrors = { ...prev }
-                delete newErrors.fecha_inicio
-                return newErrors
-              })
+            const newValue = e.target.value
+            setFechaInicio(newValue)
+
+            const newErrors = { ...errors }
+            if (!newValue) {
+              delete newErrors.fecha_inicio
+            } else if (!isWithinTwoYears(newValue)) {
+              newErrors.fecha_inicio = getMaxTripYearsMessage()
+            } else if (!isFutureOrToday(newValue)) {
+              newErrors.fecha_inicio = 'La fecha no puede ser pasada'
+            } else {
+              delete newErrors.fecha_inicio
             }
+            setErrors(newErrors)
           }}
           error={!!errors.fecha_inicio}
           helperText={errors.fecha_inicio}
           disabled={loading}
           InputLabelProps={{ shrink: true }}
+          inputProps={{ min: getMinDate(), max: getMaxDate() }}
         />
         <TextField
           type="date"
           label="Fecha de fin"
           value={fecha_fin}
           onChange={(e) => {
-            setFechaFin(e.target.value)
-            if (errors.fecha_fin) {
-              setErrors((prev) => {
-                const newErrors = { ...prev }
-                delete newErrors.fecha_fin
-                return newErrors
-              })
+            const newValue = e.target.value
+            setFechaFin(newValue)
+
+            const newErrors = { ...errors }
+            if (!newValue) {
+              delete newErrors.fecha_fin
+            } else if (!isWithinTwoYears(newValue)) {
+              newErrors.fecha_fin = getMaxTripYearsMessage()
+            } else if (!isFutureOrToday(newValue)) {
+              newErrors.fecha_fin = 'La fecha no puede ser pasada'
+            } else if (fecha_inicio && !isEndAfterStart(fecha_inicio, newValue)) {
+              newErrors.fecha_fin = 'Debe ser igual o posterior a la fecha de inicio'
+            } else {
+              delete newErrors.fecha_fin
             }
+            setErrors(newErrors)
           }}
           error={!!errors.fecha_fin}
           helperText={errors.fecha_fin}
           disabled={loading}
           InputLabelProps={{ shrink: true }}
+          inputProps={{ min: getMinDate(), max: getMaxDate() }}
         />
       </Box>
 

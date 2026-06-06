@@ -1,11 +1,15 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { AppBar, Toolbar, Typography, Box, Avatar, Button, Menu, MenuItem } from '@mui/material'
+import { AppBar, Toolbar, Typography, Box, Avatar, Button, Menu, MenuItem, IconButton } from '@mui/material'
+import { Brightness4, Brightness7 } from '@mui/icons-material'
 import { useAuth } from '@/context/AuthContext'
+import { useAppTheme } from '@/context/ThemeContext'
+import { Logo } from '@/components/Logo'
 
 export function AppHeader() {
   const { user, logout } = useAuth()
   const navigate = useNavigate()
+  const { mode, toggleTheme } = useAppTheme()
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null)
 
   const handleMenuOpen = (e: React.MouseEvent<HTMLElement>) => {
@@ -32,11 +36,25 @@ export function AppHeader() {
   }
 
   return (
-    <AppBar position="static">
-      <Toolbar>
-        <Typography variant="h6" sx={{ flex: 1, cursor: 'pointer' }} onClick={() => navigate('/')}>
-          ✈️ Cuadros de Viaje
+    <AppBar position="static" sx={{ bgcolor: 'background.paper', color: 'text.primary', boxShadow: 1 }}>
+      <Toolbar sx={{ gap: 1 }}>
+        <Logo width={40} height={40} style={{ color: 'currentColor' }} />
+        <Typography
+          variant="h6"
+          sx={{ flex: 1, cursor: 'pointer', fontWeight: 700, letterSpacing: '-0.01em' }}
+          onClick={() => navigate('/')}
+        >
+          Cuadros de Viaje
         </Typography>
+
+        <IconButton
+          size="small"
+          onClick={toggleTheme}
+          title={`Cambiar a modo ${mode === 'light' ? 'oscuro' : 'claro'}`}
+          sx={{ color: 'text.primary' }}
+        >
+          {mode === 'light' ? <Brightness4 /> : <Brightness7 />}
+        </IconButton>
 
         {user ? (
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
@@ -44,7 +62,7 @@ export function AppHeader() {
               {user.nombre} {user.apellido}
             </Typography>
             <Avatar
-              sx={{ cursor: 'pointer', bgcolor: 'primary.dark' }}
+              sx={{ cursor: 'pointer', bgcolor: 'primary.main', width: 36, height: 36 }}
               onClick={handleMenuOpen}
             >
               {getInitials()}

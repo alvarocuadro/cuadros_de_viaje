@@ -7,7 +7,7 @@ import {
   MenuItem,
   Typography,
 } from '@mui/material'
-import { isEndAfterStart } from '@/utils/dateValidation'
+import { isEndAfterStart, isWithinTwoYears, getMaxTripYearsMessage, getMinDate, getMaxDate, isFutureOrToday } from '@/utils/dateValidation'
 import { BookingDataFields } from './BookingDataFields'
 import type { ItemTransporte, TipoTransporte, DatosReserva } from '@/types/items'
 
@@ -55,6 +55,14 @@ export function TransportForm({ initialData, onSubmit, onCancel, loading = false
     if (!REGEX_HH_MM.test(horaLlegada)) newErrors.horaLlegada = 'Formato: HH:mm'
     if (!numeroServicio.trim()) newErrors.numeroServicio = 'Número de servicio requerido'
     if (!numeroReserva.trim()) newErrors.numeroReserva = 'Número de reserva requerido'
+
+    if (fechaSalida && !isWithinTwoYears(fechaSalida)) {
+      newErrors.fechaSalida = getMaxTripYearsMessage()
+    }
+
+    if (fechaLlegada && !isWithinTwoYears(fechaLlegada)) {
+      newErrors.fechaLlegada = getMaxTripYearsMessage()
+    }
 
     if (fechaSalida && fechaLlegada && !isEndAfterStart(fechaSalida, fechaLlegada)) {
       newErrors.fechaLlegada = 'Debe ser igual o posterior a la salida'
@@ -166,13 +174,26 @@ export function TransportForm({ initialData, onSubmit, onCancel, loading = false
           label="Fecha"
           value={fechaSalida}
           onChange={(e) => {
-            setFechaSalida(e.target.value)
-            clearError('fechaSalida')
+            const newValue = e.target.value
+            setFechaSalida(newValue)
+
+            const newErrors = { ...errors }
+            if (!newValue) {
+              delete newErrors.fechaSalida
+            } else if (!isWithinTwoYears(newValue)) {
+              newErrors.fechaSalida = getMaxTripYearsMessage()
+            } else if (!isFutureOrToday(newValue)) {
+              newErrors.fechaSalida = 'La fecha no puede ser pasada'
+            } else {
+              delete newErrors.fechaSalida
+            }
+            setErrors(newErrors)
           }}
           error={!!errors.fechaSalida}
           helperText={errors.fechaSalida}
           disabled={loading}
           InputLabelProps={{ shrink: true }}
+          inputProps={{ min: getMinDate(), max: getMaxDate() }}
         />
         <TextField
           label="Hora"
@@ -197,13 +218,28 @@ export function TransportForm({ initialData, onSubmit, onCancel, loading = false
           label="Fecha"
           value={fechaLlegada}
           onChange={(e) => {
-            setFechaLlegada(e.target.value)
-            clearError('fechaLlegada')
+            const newValue = e.target.value
+            setFechaLlegada(newValue)
+
+            const newErrors = { ...errors }
+            if (!newValue) {
+              delete newErrors.fechaLlegada
+            } else if (!isWithinTwoYears(newValue)) {
+              newErrors.fechaLlegada = getMaxTripYearsMessage()
+            } else if (!isFutureOrToday(newValue)) {
+              newErrors.fechaLlegada = 'La fecha no puede ser pasada'
+            } else if (fechaSalida && !isEndAfterStart(fechaSalida, newValue)) {
+              newErrors.fechaLlegada = 'Debe ser igual o posterior a la salida'
+            } else {
+              delete newErrors.fechaLlegada
+            }
+            setErrors(newErrors)
           }}
           error={!!errors.fechaLlegada}
           helperText={errors.fechaLlegada}
           disabled={loading}
           InputLabelProps={{ shrink: true }}
+          inputProps={{ min: getMinDate(), max: getMaxDate() }}
         />
         <TextField
           label="Hora"

@@ -19,7 +19,7 @@ export default function App() {
     <SnackbarProvider>
       <AuthProvider>
         <TripsProvider>
-          <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+          <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', bgcolor: 'background.default' }}>
             <AppHeader />
             <Box sx={{ flex: 1, py: 2 }}>
               <Routes>

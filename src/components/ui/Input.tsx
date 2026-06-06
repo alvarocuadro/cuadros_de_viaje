@@ -8,6 +8,7 @@ const StyledTextField = styled(TextField)(({ theme }) => ({
     borderRadius: '12px',
     fontSize: '15px',
     backgroundColor: theme.palette.background.paper,
+    paddingTop: '8px',
 
     '& input::placeholder, & textarea::placeholder': {
       color: 'var(--color-fg-disabled)',
@@ -32,6 +33,14 @@ const StyledTextField = styled(TextField)(({ theme }) => ({
     },
   },
 
+  '& .MuiOutlinedInput-input': {
+    padding: '12px 13px',
+  },
+
+  '& .MuiOutlinedInput-inputMultiline': {
+    padding: '12px 13px',
+  },
+
   '& .MuiFormHelperText-root': {
     fontSize: '12px',
     marginTop: '6px',
@@ -42,15 +51,30 @@ const StyledTextField = styled(TextField)(({ theme }) => ({
     },
   },
 
+  '& .MuiInputBase-formControl': {
+    display: 'flex',
+    flexDirection: 'column',
+  },
+
   '& label': {
     fontSize: '13px',
     fontWeight: 600,
     color: 'var(--color-fg2)',
-    marginBottom: '7px',
+    transform: 'translate(14px, 16px) scale(1)',
+    transformOrigin: 'top left',
+    transition: 'all 200ms cubic-bezier(0, 0, 0.2, 1)',
+
+    '&.MuiInputBase-adornedStart': {
+      marginLeft: '-5px',
+    },
 
     '& .MuiFormLabel-asterisk': {
       color: theme.palette.error.main,
     },
+  },
+
+  '& label.Mui-focused, & label.MuiFormLabel-filled': {
+    transform: 'translate(14px, -9px) scale(0.75)',
   },
 }))
 

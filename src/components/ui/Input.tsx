@@ -82,8 +82,25 @@ interface InputProps extends Omit<TextFieldProps, 'size'> {
   size?: 'small' | 'medium'
 }
 
-export const Input = React.forwardRef<HTMLDivElement, InputProps>(({ size = 'medium', ...props }, ref) => (
-  <StyledTextField ref={ref} size={size} {...props} />
-))
+export const Input = React.forwardRef<HTMLDivElement, InputProps>(
+  ({ size = 'medium', type, ...props }, ref) => {
+    // Para inputs de tipo date/time, no usar placeholder
+    const isDateTimeInput = type === 'date' || type === 'time' || type === 'datetime-local'
+
+    return (
+      <StyledTextField
+        ref={ref}
+        type={type}
+        size={size}
+        {...props}
+        {...(isDateTimeInput && { placeholder: undefined })}
+        InputLabelProps={{
+          shrink: true,
+          ...(props.InputLabelProps || {}),
+        }}
+      />
+    )
+  },
+)
 
 Input.displayName = 'Input'

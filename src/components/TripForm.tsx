@@ -219,7 +219,6 @@ export function TripForm({ initialData, onSubmit, onCancel, loading = false }: T
           helperText={errors.fecha_inicio}
           disabled={loading}
           fullWidth
-          InputLabelProps={{ shrink: true }}
           inputProps={{ min: getMinDate(), max: getMaxDate() }}
         />
         <Input
@@ -248,7 +247,6 @@ export function TripForm({ initialData, onSubmit, onCancel, loading = false }: T
           helperText={errors.fecha_fin}
           disabled={loading}
           fullWidth
-          InputLabelProps={{ shrink: true }}
           inputProps={{ min: getMinDate(), max: getMaxDate() }}
         />
       </Box>

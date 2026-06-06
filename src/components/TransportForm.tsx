@@ -10,6 +10,7 @@ import {
 import { DateInput } from '@/components/ui'
 import { isEndAfterStart, isWithinTwoYears, getMaxTripYearsMessage, getMinDate, getMaxDate, isFutureOrToday } from '@/utils/dateValidation'
 import { BookingDataFields } from './BookingDataFields'
+import { AviationAutocomplete } from './AviationAutocomplete'
 import type { ItemTransporte, TipoTransporte, DatosReserva } from '@/types/items'
 
 const TIPOS_TRANSPORTE: TipoTransporte[] = ['avión', 'tren', 'micro']
@@ -41,6 +42,7 @@ export function TransportForm({ initialData, onSubmit, onCancel, loading = false
     },
   )
   const [errors, setErrors] = useState<Record<string, string>>({})
+  const esAvion = tipo === 'avión'
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {}
@@ -131,43 +133,89 @@ export function TransportForm({ initialData, onSubmit, onCancel, loading = false
         ))}
       </TextField>
 
-      <TextField
-        fullWidth
-        label="Compañía"
-        value={compañia}
-        onChange={(e) => {
-          setCompania(e.target.value)
-          clearError('compañia')
-        }}
-        error={!!errors.compañia}
-        helperText={errors.compañia}
-        disabled={loading}
-        sx={{ mb: 2 }}
-      />
+      <Box sx={{ mb: 2 }}>
+        {esAvion ? (
+          <AviationAutocomplete
+            kind="airline"
+            label="Aerolínea"
+            value={compañia}
+            onChange={(newValue) => {
+              setCompania(newValue)
+              clearError('compañia')
+            }}
+            error={!!errors.compañia}
+            helperText={errors.compañia}
+            disabled={loading}
+          />
+        ) : (
+          <TextField
+            fullWidth
+            label="Compañía"
+            value={compañia}
+            onChange={(e) => {
+              setCompania(e.target.value)
+              clearError('compañia')
+            }}
+            error={!!errors.compañia}
+            helperText={errors.compañia}
+            disabled={loading}
+          />
+        )}
+      </Box>
 
       <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 2, mb: 2 }}>
-        <TextField
-          label="Origen"
-          value={origen}
-          onChange={(e) => {
-            setOrigen(e.target.value)
-            clearError('origen')
-          }}
-          error={!!errors.origen}
-          helperText={errors.origen}
-          disabled={loading}
-        />
-        <TextField
-          label="Destino"
-          value={destino}
-          onChange={(e) => {
-            setDestino(e.target.value)
-            clearError('destino')
-          }}
-          error={!!errors.destino}
-          helperText={errors.destino}
-          disabled={loading}
-        />
+        {esAvion ? (
+          <AviationAutocomplete
+            kind="airport"
+            label="Aeropuerto de origen"
+            value={origen}
+            onChange={(newValue) => {
+              setOrigen(newValue)
+              clearError('origen')
+            }}
+            error={!!errors.origen}
+            helperText={errors.origen}
+            disabled={loading}
+          />
+        ) : (
+          <TextField
+            label="Origen"
+            value={origen}
+            onChange={(e) => {
+              setOrigen(e.target.value)
+              clearError('origen')
+            }}
+            error={!!errors.origen}
+            helperText={errors.origen}
+            disabled={loading}
+          />
+        )}
+        {esAvion ? (
+          <AviationAutocomplete
+            kind="airport"
+            label="Aeropuerto de destino"
+            value={destino}
+            onChange={(newValue) => {
+              setDestino(newValue)
+              clearError('destino')
+            }}
+            error={!!errors.destino}
+            helperText={errors.destino}
+            disabled={loading}
+          />
+        ) : (
+          <TextField
+            label="Destino"
+            value={destino}
+            onChange={(e) => {
+              setDestino(e.target.value)
+              clearError('destino')
+            }}
+            error={!!errors.destino}
+            helperText={errors.destino}
+            disabled={loading}
+          />
+        )}
       </Box>
 
       <Typography variant="subtitle2" sx={{ mt: 3, mb: 1 }}>

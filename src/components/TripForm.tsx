@@ -78,10 +78,12 @@ export function TripForm({ initialData, onSubmit, onCancel, loading = false }: T
   }
 
   return (
-    <Box component="form" onSubmit={handleSubmit}>
+    <Box component="form" onSubmit={handleSubmit} sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+      {/* Trip Name */}
       <Input
         fullWidth
         label="Nombre del viaje"
+        placeholder="P. ej. San Francisco 2025"
         value={nombre}
         onChange={(e) => {
           setNombre(e.target.value)
@@ -96,16 +98,16 @@ export function TripForm({ initialData, onSubmit, onCancel, loading = false }: T
         error={!!errors.nombre}
         helperText={errors.nombre}
         disabled={loading}
-        sx={{ mb: 3 }}
       />
 
-      <Box sx={{ mb: 3 }}>
-        <Typography variant="body2" sx={{ fontWeight: 600, mb: 1, color: 'text.secondary' }}>
+      {/* Destinations Section */}
+      <Box>
+        <Typography variant="body2" sx={{ fontWeight: 600, mb: 1.5, color: 'text.secondary' }}>
           Destinos
         </Typography>
-        <Box sx={{ display: 'flex', gap: 1, mb: 2 }}>
+        <Box sx={{ display: 'flex', gap: 1, mb: 2, alignItems: 'flex-start' }}>
           <Input
-            placeholder="Agregar destino"
+            placeholder="P. ej. París, Madrid"
             value={destinoInput}
             onChange={(e) => setDestinoInput(e.target.value)}
             onKeyPress={(e) => {
@@ -123,57 +125,76 @@ export function TripForm({ initialData, onSubmit, onCancel, loading = false }: T
             variant="secondary"
             onClick={handleAddDestino}
             disabled={loading || !destinoInput.trim()}
-            size="small"
-            sx={{ minWidth: '44px' }}
+            sx={{
+              minWidth: '44px !important',
+              padding: '12px !important',
+              fontSize: '18px',
+              height: '48px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              flexShrink: 0,
+            }}
           >
             +
           </Button>
         </Box>
-        <Box sx={{ display: 'flex', gap: 0.5, flexWrap: 'wrap', mb: 1 }}>
-          {destinos.map((destino, i) => (
-            <Box
-              key={i}
-              sx={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: 0.5,
-                px: 1.5,
-                py: 0.75,
-                borderRadius: 'var(--border-radius-pill)',
-                backgroundColor: 'var(--color-surface-sunken)',
-                fontSize: '12.5px',
-                color: 'var(--color-fg2)',
-                border: '1px solid var(--color-border-subtle)',
-              }}
-            >
-              {destino}
-              <button
-                type="button"
-                onClick={() => handleRemoveDestino(i)}
-                disabled={loading}
-                style={{
-                  background: 'none',
-                  border: 'none',
-                  cursor: loading ? 'not-allowed' : 'pointer',
-                  padding: 0,
-                  color: 'var(--color-fg3)',
-                  fontSize: '16px',
-                  opacity: loading ? 0.5 : 1,
+
+        {/* Destination Chips */}
+        {destinos.length > 0 && (
+          <Box sx={{ display: 'flex', gap: 0.75, flexWrap: 'wrap', mb: 1.5 }}>
+            {destinos.map((destino, i) => (
+              <Box
+                key={i}
+                sx={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: 0.75,
+                  px: 1.5,
+                  py: 0.75,
+                  borderRadius: 'var(--border-radius-pill)',
+                  backgroundColor: 'var(--color-surface-sunken)',
+                  fontSize: '12.5px',
+                  fontWeight: 500,
+                  color: 'var(--color-fg2)',
+                  border: '1px solid var(--color-border-subtle)',
+                  whiteSpace: 'nowrap',
                 }}
               >
-                ×
-              </button>
-            </Box>
-          ))}
-        </Box>
+                {destino}
+                <button
+                  type="button"
+                  onClick={() => handleRemoveDestino(i)}
+                  disabled={loading}
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    cursor: loading ? 'not-allowed' : 'pointer',
+                    padding: 0,
+                    color: 'var(--color-fg3)',
+                    fontSize: '18px',
+                    opacity: loading ? 0.5 : 1,
+                    lineHeight: 1,
+                    display: 'flex',
+                    alignItems: 'center',
+                  }}
+                >
+                  ×
+                </button>
+              </Box>
+            ))}
+          </Box>
+        )}
+
         {errors.destinos && (
-          <Typography sx={{ color: 'error.main', fontSize: '12px' }}>
+          <Typography sx={{ color: 'error.main', fontSize: '12px', mt: 0.75 }}>
             {errors.destinos}
           </Typography>
         )}
       </Box>
 
-      <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, gap: 2, mb: 3 }}>
+      {/* Date Section */}
+      <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, gap: 2 }}>
         <Input
           type="date"
           label="Fecha de inicio"
@@ -232,11 +253,13 @@ export function TripForm({ initialData, onSubmit, onCancel, loading = false }: T
         />
       </Box>
 
-      <Box sx={{ display: 'flex', gap: 2, justifyContent: 'flex-end' }}>
+      {/* Action Buttons */}
+      <Box sx={{ display: 'flex', gap: 2, justifyContent: 'flex-end', pt: 1 }}>
         <Button
           variant="secondary"
           onClick={onCancel}
           disabled={loading}
+          sx={{ minWidth: '120px' }}
         >
           Cancelar
         </Button>
@@ -244,8 +267,13 @@ export function TripForm({ initialData, onSubmit, onCancel, loading = false }: T
           variant="primary"
           type="submit"
           disabled={loading}
+          sx={{ minWidth: '120px', position: 'relative' }}
         >
-          {loading ? <CircularProgress size={24} /> : initialData ? 'Actualizar' : 'Crear'}
+          {loading ? (
+            <CircularProgress size={20} sx={{ position: 'absolute' }} />
+          ) : (
+            initialData ? 'Actualizar' : 'Crear'
+          )}
         </Button>
       </Box>
     </Box>

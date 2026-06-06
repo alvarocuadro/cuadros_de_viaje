@@ -1,12 +1,6 @@
 import { useState } from 'react'
-import {
-  Box,
-  TextField,
-  Button,
-  Chip,
-  Typography,
-  CircularProgress,
-} from '@mui/material'
+import { Box, Typography, CircularProgress } from '@mui/material'
+import { Input, Button } from '@/components/ui'
 import { isEndAfterStart, isFutureOrToday, isWithinTwoYears, getMaxTripYearsMessage, getMinDate, getMaxDate } from '@/utils/dateValidation'
 import type { ViajeConItems } from '@/types/trips'
 
@@ -85,7 +79,7 @@ export function TripForm({ initialData, onSubmit, onCancel, loading = false }: T
 
   return (
     <Box component="form" onSubmit={handleSubmit}>
-      <TextField
+      <Input
         fullWidth
         label="Nombre del viaje"
         value={nombre}
@@ -102,16 +96,15 @@ export function TripForm({ initialData, onSubmit, onCancel, loading = false }: T
         error={!!errors.nombre}
         helperText={errors.nombre}
         disabled={loading}
-        sx={{ mb: 2 }}
+        sx={{ mb: 3 }}
       />
 
-      <Box sx={{ mb: 2 }}>
-        <Typography variant="subtitle2" sx={{ mb: 1 }}>
+      <Box sx={{ mb: 3 }}>
+        <Typography variant="body2" sx={{ fontWeight: 600, mb: 1, color: 'text.secondary' }}>
           Destinos
         </Typography>
-        <Box sx={{ display: 'flex', gap: 1, mb: 1 }}>
-          <TextField
-            size="small"
+        <Box sx={{ display: 'flex', gap: 1, mb: 2 }}>
+          <Input
             placeholder="Agregar destino"
             value={destinoInput}
             onChange={(e) => setDestinoInput(e.target.value)}
@@ -123,26 +116,65 @@ export function TripForm({ initialData, onSubmit, onCancel, loading = false }: T
             }}
             disabled={loading}
             fullWidth
+            size="small"
+            sx={{ mb: 0 }}
           />
-          <Button variant="outlined" onClick={handleAddDestino} disabled={loading || !destinoInput.trim()}>
+          <Button
+            variant="secondary"
+            onClick={handleAddDestino}
+            disabled={loading || !destinoInput.trim()}
+            size="small"
+            sx={{ minWidth: '44px' }}
+          >
             +
           </Button>
         </Box>
         <Box sx={{ display: 'flex', gap: 0.5, flexWrap: 'wrap', mb: 1 }}>
           {destinos.map((destino, i) => (
-            <Chip
+            <Box
               key={i}
-              label={destino}
-              onDelete={() => handleRemoveDestino(i)}
-              disabled={loading}
-            />
+              sx={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 0.5,
+                px: 1.5,
+                py: 0.75,
+                borderRadius: 'var(--border-radius-pill)',
+                backgroundColor: 'var(--color-surface-sunken)',
+                fontSize: '12.5px',
+                color: 'var(--color-fg2)',
+                border: '1px solid var(--color-border-subtle)',
+              }}
+            >
+              {destino}
+              <button
+                type="button"
+                onClick={() => handleRemoveDestino(i)}
+                disabled={loading}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  cursor: loading ? 'not-allowed' : 'pointer',
+                  padding: 0,
+                  color: 'var(--color-fg3)',
+                  fontSize: '16px',
+                  opacity: loading ? 0.5 : 1,
+                }}
+              >
+                ×
+              </button>
+            </Box>
           ))}
         </Box>
-        {errors.destinos && <Typography color="error" variant="caption">{errors.destinos}</Typography>}
+        {errors.destinos && (
+          <Typography sx={{ color: 'error.main', fontSize: '12px' }}>
+            {errors.destinos}
+          </Typography>
+        )}
       </Box>
 
-      <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 2, mb: 2 }}>
-        <TextField
+      <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, gap: 2, mb: 3 }}>
+        <Input
           type="date"
           label="Fecha de inicio"
           value={fecha_inicio}
@@ -165,10 +197,11 @@ export function TripForm({ initialData, onSubmit, onCancel, loading = false }: T
           error={!!errors.fecha_inicio}
           helperText={errors.fecha_inicio}
           disabled={loading}
+          fullWidth
           InputLabelProps={{ shrink: true }}
           inputProps={{ min: getMinDate(), max: getMaxDate() }}
         />
-        <TextField
+        <Input
           type="date"
           label="Fecha de fin"
           value={fecha_fin}
@@ -193,22 +226,26 @@ export function TripForm({ initialData, onSubmit, onCancel, loading = false }: T
           error={!!errors.fecha_fin}
           helperText={errors.fecha_fin}
           disabled={loading}
+          fullWidth
           InputLabelProps={{ shrink: true }}
           inputProps={{ min: getMinDate(), max: getMaxDate() }}
         />
       </Box>
 
-      <Box sx={{ display: 'flex', gap: 1 }}>
+      <Box sx={{ display: 'flex', gap: 2, justifyContent: 'flex-end' }}>
         <Button
-          fullWidth
-          variant="contained"
+          variant="secondary"
+          onClick={onCancel}
+          disabled={loading}
+        >
+          Cancelar
+        </Button>
+        <Button
+          variant="primary"
           type="submit"
           disabled={loading}
         >
           {loading ? <CircularProgress size={24} /> : initialData ? 'Actualizar' : 'Crear'}
-        </Button>
-        <Button fullWidth variant="outlined" onClick={onCancel} disabled={loading}>
-          Cancelar
         </Button>
       </Box>
     </Box>

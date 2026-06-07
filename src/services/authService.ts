@@ -26,6 +26,13 @@ export async function register(
     const { data, error } = await supabase.auth.signUp({
       email,
       password: randomPassword,
+      options: {
+        data: {
+          nombre,
+          apellido,
+          país,
+        },
+      },
     })
 
     if (error) {
@@ -44,28 +51,6 @@ export async function register(
         error: {
           code: 'no_user_id',
           message: 'No se pudo crear el usuario',
-        },
-      }
-    }
-
-    const { error: profileError } = await supabase.from('profiles').insert([
-      {
-        id: data.user.id,
-        nombre,
-        apellido,
-        país,
-        email,
-        email_verificado: false,
-      },
-    ])
-
-    if (profileError) {
-      await supabase.auth.admin?.deleteUser(data.user.id)
-      return {
-        success: false,
-        error: {
-          code: profileError.code || 'profile_error',
-          message: profileError.message,
         },
       }
     }

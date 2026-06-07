@@ -25,7 +25,10 @@
       "Bash(npx --yes kill-port 5173)",
       "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:5173/)",
       "Bash(npx playwright *)",
-      "Bash(Remove-Item verify-input.cjs, verify-input.js, verify-destino-input.cjs, verify-label-screenshot.png, verify-filled-label.png, verify-empty-label.png -ErrorAction SilentlyContinue)"
+      "Bash(Remove-Item verify-input.cjs, verify-input.js, verify-destino-input.cjs, verify-label-screenshot.png, verify-filled-label.png, verify-empty-label.png -ErrorAction SilentlyContinue)",
+      "Bash(cat supabase/.temp/project-ref)",
+      "Bash(cat supabase/.temp/linked-project.json)",
+      "Bash(npm --version)"
     ],
     "additionalDirectories": [
       "c:\\Users\\babom\\OneDrive\\Documents\\GitHub\\cuadros_de_viaje\\.claude"

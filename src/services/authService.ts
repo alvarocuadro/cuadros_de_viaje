@@ -62,7 +62,7 @@ export async function register(
       },
     })
 
-    if (otpError) {
+    if (otpError && otpError.code !== 'over_email_send_rate_limit') {
       return {
         success: false,
         error: {

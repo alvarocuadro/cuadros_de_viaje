@@ -127,7 +127,7 @@ export function TripDetailPage() {
     setDeleting(false)
 
     if (response.success) {
-      setAgenda(agenda.filter((a) => !(a.tipo === itemToDelete.tipo && (a.datos as any).id === itemToDelete.id)))
+      setAgenda(agenda.filter((a) => !(a.tipo === itemToDelete.tipo && a.datos.id === itemToDelete.id)))
       setDeleteDialogOpen(false)
       setItemToDelete(null)
       snackbar.showSuccess('Ítem eliminado correctamente')

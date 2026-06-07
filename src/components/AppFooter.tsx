@@ -47,26 +47,47 @@ export function AppFooter() {
           </Link>
         </Box>
 
-        <Link
-          href={REPOSITORY_URL}
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label="Clonar Cuadros de viaje desde GitHub"
-          underline="hover"
-          color="text.secondary"
+        <Box
           sx={{
-            display: 'inline-flex',
+            display: 'flex',
             alignItems: 'center',
-            gap: 0.75,
-            fontSize: 13,
-            fontWeight: 600,
-            whiteSpace: 'nowrap',
-            '&:hover': { color: 'primary.main' },
+            gap: { xs: 1.25, sm: 2 },
+            flexWrap: 'wrap',
+            justifyContent: 'center',
           }}
         >
-          <GitHubIcon sx={{ fontSize: 19 }} />
-          Clonar desde GitHub
-        </Link>
+          <Link
+            href="https://www.geoapify.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+            variant="caption"
+            underline="hover"
+            color="text.secondary"
+          >
+            Powered by Geoapify
+          </Link>
+
+          <Link
+            href={REPOSITORY_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Clonar Cuadros de viaje desde GitHub"
+            underline="hover"
+            color="text.secondary"
+            sx={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 0.75,
+              fontSize: 13,
+              fontWeight: 600,
+              whiteSpace: 'nowrap',
+              '&:hover': { color: 'primary.main' },
+            }}
+          >
+            <GitHubIcon sx={{ fontSize: 19 }} />
+            Clonar desde GitHub
+          </Link>
+        </Box>
       </Box>
     </Box>
   )

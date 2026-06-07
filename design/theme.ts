@@ -7,6 +7,7 @@
 // @import url('https://fonts.googleapis.com/css2?family=Hanken+Grotesk:ital,wght@0,400..800;1,400..600&family=Spline+Sans+Mono:wght@400..600&display=swap');
 
 import { createTheme } from '@mui/material/styles';
+import type { Shadows } from '@mui/material/styles';
 
 declare module '@mui/material/styles' {
   interface Palette {
@@ -163,7 +164,7 @@ export const theme = createTheme({
     '0 30px 70px rgba(14, 28, 40, 0.34)',                                                // 6 phone frame
     // 7-24: repeat lg for unused MUI levels
     ...Array(18).fill('0 12px 28px rgba(14, 28, 40, 0.13), 0 4px 8px rgba(14, 28, 40, 0.06)'),
-  ] as any,
+  ] as Shadows,
 
   components: {
     MuiCssBaseline: {

@@ -46,7 +46,9 @@ export function TransportForm({
   const [destino, setDestino] = useState(initialData?.destino || '')
   const [fechaSalida, setFechaSalida] = useState(initialData?.fecha_salida || '')
   const [horaSalida, setHoraSalida] = useState(initialData?.hora_salida || '')
-  const [fechaLlegada, setFechaLlegada] = useState(initialData?.fecha_llegada || '')
+  const [fechaLlegada, setFechaLlegada] = useState(
+    initialData?.fecha_llegada || initialData?.fecha_salida || ''
+  )
   const [horaLlegada, setHoraLlegada] = useState(initialData?.hora_llegada || '')
   const [numeroServicio, setNumeroServicio] = useState(initialData?.numero_servicio || '')
   const [numeroReserva, setNumeroReserva] = useState(initialData?.numero_reserva || '')
@@ -139,6 +141,12 @@ export function TransportForm({
 
   const handleFechaSalidaChange = (newValue: string) => {
     setFechaSalida(newValue)
+    const nextFechaLlegada =
+      newValue && (!fechaLlegada || !isEndAfterStart(newValue, fechaLlegada))
+        ? newValue
+        : fechaLlegada
+    if (nextFechaLlegada !== fechaLlegada) setFechaLlegada(nextFechaLlegada)
+
     setErrors((previousErrors) => {
       const newErrors = { ...previousErrors }
 
@@ -150,6 +158,9 @@ export function TransportForm({
         newErrors.fechaSalida = 'La fecha no puede ser pasada'
       } else {
         delete newErrors.fechaSalida
+      }
+      if (nextFechaLlegada && isEndAfterStart(newValue, nextFechaLlegada)) {
+        delete newErrors.fechaLlegada
       }
 
       return newErrors
@@ -180,9 +191,14 @@ export function TransportForm({
       setCompania(flight.airlineName)
       setOrigen(flight.departure.airport)
       setDestino(flight.arrival.airport)
-      setFechaSalida(flight.departure.date || fechaSalida)
+      const departureDate = flight.departure.date || fechaSalida
+      setFechaSalida(departureDate)
       setHoraSalida(flight.departure.time)
-      setFechaLlegada(flight.arrival.date)
+      setFechaLlegada(
+        flight.arrival.date && isEndAfterStart(departureDate, flight.arrival.date)
+          ? flight.arrival.date
+          : departureDate
+      )
       setHoraLlegada(flight.arrival.time)
       setErrors((previousErrors) => {
         const newErrors = { ...previousErrors }
@@ -457,7 +473,7 @@ export function TransportForm({
           helperText={errors.fechaLlegada}
           disabled={loading}
           fullWidth
-          min={getMinDate()}
+          min={fechaSalida || getMinDate()}
           max={getMaxDate()}
         />
         <TextField

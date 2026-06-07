@@ -3,12 +3,24 @@ import { Add as AddIcon } from '@mui/icons-material'
 import { Box, CircularProgress, IconButton, Tooltip } from '@mui/material'
 import { Input, DateInput, Button } from '@/components/ui'
 import { DestinationAutocomplete } from '@/components/DestinationAutocomplete'
-import { isEndAfterStart, isFutureOrToday, isWithinTwoYears, getMaxTripYearsMessage, getMinDate, getMaxDate } from '@/utils/dateValidation'
+import {
+  isEndAfterStart,
+  isFutureOrToday,
+  isWithinTwoYears,
+  getMaxTripYearsMessage,
+  getMinDate,
+  getMaxDate,
+} from '@/utils/dateValidation'
 import type { ViajeConItems } from '@/types/trips'
 
 interface TripFormProps {
   initialData?: ViajeConItems
-  onSubmit: (nombre: string, destinos: string[], fecha_inicio?: string, fecha_fin?: string) => Promise<void>
+  onSubmit: (
+    nombre: string,
+    destinos: string[],
+    fecha_inicio?: string,
+    fecha_fin?: string
+  ) => Promise<void>
   onCancel: () => void
   loading?: boolean
 }
@@ -18,7 +30,9 @@ export function TripForm({ initialData, onSubmit, onCancel, loading = false }: T
   const [destinos, setDestinos] = useState<string[]>(initialData?.destinos || [])
   const [destinoInput, setDestinoInput] = useState('')
   const [fecha_inicio, setFechaInicio] = useState(initialData?.fecha_inicio || '')
-  const [fecha_fin, setFechaFin] = useState(initialData?.fecha_fin || '')
+  const [fecha_fin, setFechaFin] = useState(
+    initialData?.fecha_fin || initialData?.fecha_inicio || ''
+  )
   const [errors, setErrors] = useState<Record<string, string>>({})
 
   const validateForm = () => {
@@ -84,7 +98,11 @@ export function TripForm({ initialData, onSubmit, onCancel, loading = false }: T
   }
 
   return (
-    <Box component="form" onSubmit={handleSubmit} sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+    <Box
+      component="form"
+      onSubmit={handleSubmit}
+      sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}
+    >
       {/* Trip Name */}
       <Input
         fullWidth
@@ -108,7 +126,14 @@ export function TripForm({ initialData, onSubmit, onCancel, loading = false }: T
 
       {/* Destinations Section */}
       <Box>
-        <Box sx={{ display: 'flex', gap: 1, mb: destinos.length > 0 ? 2 : 0, alignItems: 'flex-start' }}>
+        <Box
+          sx={{
+            display: 'flex',
+            gap: 1,
+            mb: destinos.length > 0 ? 2 : 0,
+            alignItems: 'flex-start',
+          }}
+        >
           <DestinationAutocomplete
             value={destinoInput}
             onChange={setDestinoInput}
@@ -197,6 +222,11 @@ export function TripForm({ initialData, onSubmit, onCancel, loading = false }: T
           value={fecha_inicio}
           onChange={(newValue) => {
             setFechaInicio(newValue)
+            const nextFechaFin =
+              newValue && (!fecha_fin || !isEndAfterStart(newValue, fecha_fin))
+                ? newValue
+                : fecha_fin
+            if (nextFechaFin !== fecha_fin) setFechaFin(nextFechaFin)
 
             const newErrors = { ...errors }
             if (!newValue) {
@@ -207,6 +237,9 @@ export function TripForm({ initialData, onSubmit, onCancel, loading = false }: T
               newErrors.fecha_inicio = 'La fecha no puede ser pasada'
             } else {
               delete newErrors.fecha_inicio
+            }
+            if (nextFechaFin && isEndAfterStart(newValue, nextFechaFin)) {
+              delete newErrors.fecha_fin
             }
             setErrors(newErrors)
           }}
@@ -241,7 +274,7 @@ export function TripForm({ initialData, onSubmit, onCancel, loading = false }: T
           helperText={errors.fecha_fin}
           disabled={loading}
           fullWidth
-          min={getMinDate()}
+          min={fecha_inicio || getMinDate()}
           max={getMaxDate()}
         />
       </Box>
@@ -264,8 +297,10 @@ export function TripForm({ initialData, onSubmit, onCancel, loading = false }: T
         >
           {loading ? (
             <CircularProgress size={20} sx={{ position: 'absolute' }} />
+          ) : initialData ? (
+            'Actualizar'
           ) : (
-            initialData ? 'Actualizar' : 'Crear'
+            'Crear'
           )}
         </Button>
       </Box>

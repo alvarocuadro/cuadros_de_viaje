@@ -1,9 +1,23 @@
 # cuadros_de_viaje
 
-Esta es una aplicación familiar no comercial, para viudas de Trip Case que no encontramos dónde cargar los datos de nuestros viajes.
-Fue hecha con vibe coding con Claude y Codex
-Todo lo necesario para deployarlo está en /docs/README.md
-Validar .env.local.example para las variables de entorno locales y las cuentas externas necesarias.
+Esta es una aplicación familiar no comercial, para viudas de TripCase que no encontramos dónde cargar los datos de nuestros viajes.
+Fue hecha con vibe coding con Claude y Codex.
+Todo lo necesario para desplegarla está en `/docs/README.md`.
+Validar `.env.local.example` para las variables de entorno locales y las cuentas externas necesarias.
+
+## Licencia
+
+Copyright 2026 Álvaro Cuadro.
+
+El código fuente se publica bajo la
+[PolyForm Noncommercial License 1.0.0](LICENSE). Se permite usar, modificar,
+clonar y redistribuir el software únicamente para fines no comerciales,
+manteniendo los archivos `LICENSE` y `NOTICE`.
+
+Esta licencia no convierte al proyecto en software de código abierto según la
+definición de Open Source Initiative, debido a la restricción de uso comercial.
+Para cualquier uso comercial se requiere una licencia separada otorgada por el
+titular.
 
 ## Consulta de vuelos
 
@@ -30,6 +44,6 @@ En Supabase, configurar en **Authentication → URL Configuration**:
   `http://localhost:5173/dashboard`.
 
 Firefox puede mostrar un aviso indicando que el dominio de Supabase fue
-clasificado como *bounce tracker* al abrir un magic link. Es un aviso de
+clasificado como _bounce tracker_ al abrir un magic link. Es un aviso de
 privacidad del navegador por la redirección intermedia y no un error de la
 aplicación.

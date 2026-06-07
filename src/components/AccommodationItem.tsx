@@ -122,9 +122,11 @@ export function AccommodationItem({ item, onEdit, onDelete }: AccommodationItemP
             <Typography variant="subtitle2" sx={{ mb: 1 }}>
               Reserva
             </Typography>
-            <Typography variant="body2">
-              <strong>Número:</strong> {item.numero_reserva}
-            </Typography>
+            {item.numero_reserva && (
+              <Typography variant="body2">
+                <strong>Número:</strong> {item.numero_reserva}
+              </Typography>
+            )}
             {item.datos_reserva.reservado_por_agencia && item.datos_reserva.nombre_agencia && (
               <Typography variant="body2">
                 <strong>Agencia:</strong> {item.datos_reserva.nombre_agencia}

@@ -1,18 +1,26 @@
 import { useState } from 'react'
-import {
-  Box,
-  TextField,
-  Button,
-  CircularProgress,
-  MenuItem,
-  Typography,
-} from '@mui/material'
+import { Box, TextField, Button, CircularProgress, MenuItem, Typography } from '@mui/material'
 import { DateInput } from '@/components/ui'
-import { isEndAfterStart, isWithinTwoYears, getMaxTripYearsMessage, getMinDate, getMaxDate, isFutureOrToday } from '@/utils/dateValidation'
+import {
+  isEndAfterStart,
+  isWithinTwoYears,
+  getMaxTripYearsMessage,
+  getMinDate,
+  getMaxDate,
+  isFutureOrToday,
+} from '@/utils/dateValidation'
 import { BookingDataFields } from './BookingDataFields'
+import { AddressAutocomplete } from './AddressAutocomplete'
 import type { ItemHospedaje, TipoHospedaje, DatosReserva } from '@/types/items'
 
-const TIPOS_HOSPEDAJE: TipoHospedaje[] = ['hotel', 'airbnb', 'posada', 'hostel', 'casa de familia', 'otro']
+const TIPOS_HOSPEDAJE: TipoHospedaje[] = [
+  'hotel',
+  'airbnb',
+  'posada',
+  'hostel',
+  'casa de familia',
+  'otro',
+]
 
 interface AccommodationFormProps {
   initialData?: ItemHospedaje
@@ -21,11 +29,18 @@ interface AccommodationFormProps {
   loading?: boolean
 }
 
-export function AccommodationForm({ initialData, onSubmit, onCancel, loading = false }: AccommodationFormProps) {
+export function AccommodationForm({
+  initialData,
+  onSubmit,
+  onCancel,
+  loading = false,
+}: AccommodationFormProps) {
   const [tipo, setTipo] = useState<TipoHospedaje>(initialData?.tipo || 'hotel')
   const [nombre, setNombre] = useState(initialData?.nombre || '')
   const [fechaCheckin, setFechaCheckin] = useState(initialData?.fecha_checkin || '')
-  const [fechaCheckout, setFechaCheckout] = useState(initialData?.fecha_checkout || '')
+  const [fechaCheckout, setFechaCheckout] = useState(
+    initialData?.fecha_checkout || initialData?.fecha_checkin || ''
+  )
   const [direccion, setDireccion] = useState(initialData?.dirección || '')
   const [telefono, setTelefono] = useState(initialData?.teléfono || '')
   const [email, setEmail] = useState(initialData?.email || '')
@@ -34,7 +49,7 @@ export function AccommodationForm({ initialData, onSubmit, onCancel, loading = f
     initialData?.datos_reserva || {
       reservado_por_agencia: false,
       codigos_reserva: [],
-    },
+    }
   )
   const [errors, setErrors] = useState<Record<string, string>>({})
 
@@ -45,8 +60,6 @@ export function AccommodationForm({ initialData, onSubmit, onCancel, loading = f
     if (!fechaCheckin) newErrors.fechaCheckin = 'Fecha de check-in requerida'
     if (!fechaCheckout) newErrors.fechaCheckout = 'Fecha de check-out requerida'
     if (!direccion.trim()) newErrors.direccion = 'Dirección requerida'
-    if (!numeroReserva.trim()) newErrors.numeroReserva = 'Número de reserva requerido'
-
     if (fechaCheckin && !isWithinTwoYears(fechaCheckin)) {
       newErrors.fechaCheckin = getMaxTripYearsMessage()
     } else if (fechaCheckin && !isFutureOrToday(fechaCheckin)) {
@@ -89,7 +102,7 @@ export function AccommodationForm({ initialData, onSubmit, onCancel, loading = f
       dirección: direccion.trim(),
       teléfono: telefono.trim() || undefined,
       email: email.trim() || undefined,
-      numero_reserva: numeroReserva.trim(),
+      numero_reserva: numeroReserva.trim() || undefined,
       datos_reserva: datosReserva,
     }
 
@@ -142,6 +155,11 @@ export function AccommodationForm({ initialData, onSubmit, onCancel, loading = f
           value={fechaCheckin}
           onChange={(newValue) => {
             setFechaCheckin(newValue)
+            const nextFechaCheckout =
+              newValue && (!fechaCheckout || !isEndAfterStart(newValue, fechaCheckout))
+                ? newValue
+                : fechaCheckout
+            if (nextFechaCheckout !== fechaCheckout) setFechaCheckout(nextFechaCheckout)
 
             const newErrors = { ...errors }
             if (!newValue) {
@@ -152,6 +170,9 @@ export function AccommodationForm({ initialData, onSubmit, onCancel, loading = f
               newErrors.fechaCheckin = 'La fecha no puede ser pasada'
             } else {
               delete newErrors.fechaCheckin
+            }
+            if (nextFechaCheckout && isEndAfterStart(newValue, nextFechaCheckout)) {
+              delete newErrors.fechaCheckout
             }
             setErrors(newErrors)
           }}
@@ -186,24 +207,23 @@ export function AccommodationForm({ initialData, onSubmit, onCancel, loading = f
           helperText={errors.fechaCheckout}
           disabled={loading}
           fullWidth
-          min={getMinDate()}
+          min={fechaCheckin || getMinDate()}
           max={getMaxDate()}
         />
       </Box>
 
-      <TextField
-        fullWidth
-        label="Dirección"
-        value={direccion}
-        onChange={(e) => {
-          setDireccion(e.target.value)
-          clearError('direccion')
-        }}
-        error={!!errors.direccion}
-        helperText={errors.direccion}
-        disabled={loading}
-        sx={{ mb: 2 }}
-      />
+      <Box sx={{ mb: 2 }}>
+        <AddressAutocomplete
+          value={direccion}
+          onChange={(newValue) => {
+            setDireccion(newValue)
+            clearError('direccion')
+          }}
+          error={!!errors.direccion}
+          helperText={errors.direccion}
+          disabled={loading}
+        />
+      </Box>
 
       <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 2, mb: 2 }}>
         <TextField
@@ -229,14 +249,9 @@ export function AccommodationForm({ initialData, onSubmit, onCancel, loading = f
 
       <TextField
         fullWidth
-        label="Número de Reserva"
+        label="Número de Reserva (opcional)"
         value={numeroReserva}
-        onChange={(e) => {
-          setNumeroReserva(e.target.value)
-          clearError('numeroReserva')
-        }}
-        error={!!errors.numeroReserva}
-        helperText={errors.numeroReserva}
+        onChange={(e) => setNumeroReserva(e.target.value)}
         disabled={loading}
         sx={{ mb: 2 }}
       />

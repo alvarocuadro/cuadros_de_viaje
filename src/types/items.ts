@@ -38,7 +38,7 @@ export interface ItemHospedaje {
   dirección: string
   teléfono?: string
   email?: string
-  numero_reserva: string
+  numero_reserva?: string
   datos_reserva: DatosReserva
   created_at: string
   updated_at: string

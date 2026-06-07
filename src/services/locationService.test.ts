@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { searchLocations } from './locationService'
+import { searchAddresses, searchLocations } from './locationService'
 
 describe('searchLocations', () => {
   beforeEach(() => {
@@ -70,11 +70,57 @@ describe('searchLocations', () => {
     ])
 
     const requestUrl = new URL(fetchMock.mock.calls[0][0])
-    expect(requestUrl.origin + requestUrl.pathname).toBe('https://api.geoapify.com/v1/geocode/autocomplete')
+    expect(requestUrl.origin + requestUrl.pathname).toBe(
+      'https://api.geoapify.com/v1/geocode/autocomplete'
+    )
     expect(requestUrl.searchParams.get('text')).toBe('cordoba')
     expect(requestUrl.searchParams.has('type')).toBe(false)
     expect(requestUrl.searchParams.get('lang')).toBe('es')
     expect(requestUrl.searchParams.get('limit')).toBe('10')
     expect(requestUrl.searchParams.get('apiKey')).toBe('test-api-key')
+  })
+
+  it('transforma resultados de Geoapify en direcciones completas', async () => {
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({
+        results: [
+          {
+            place_id: 'hotel-1',
+            name: 'Hotel Central',
+            formatted: 'Hotel Central, Avenida Corrientes 1234, Buenos Aires, Argentina',
+            result_type: 'amenity',
+            lat: -34.6,
+            lon: -58.4,
+          },
+          {
+            place_id: 'address-2',
+            name: 'Edificio Plaza',
+            address_line1: 'Calle Falsa 123',
+            address_line2: 'Rosario, Santa Fe, Argentina',
+            result_type: 'building',
+            lat: -32.95,
+            lon: -60.66,
+          },
+        ],
+      }),
+    })
+    vi.stubGlobal('fetch', fetchMock)
+
+    await expect(searchAddresses('  hotel central  ')).resolves.toEqual([
+      {
+        id: 'hotel-1',
+        label: 'Hotel Central, Avenida Corrientes 1234, Buenos Aires, Argentina',
+      },
+      {
+        id: 'address-2',
+        label: 'Calle Falsa 123, Rosario, Santa Fe, Argentina',
+        detail: 'Edificio Plaza',
+      },
+    ])
+
+    const requestUrl = new URL(fetchMock.mock.calls[0][0])
+    expect(requestUrl.searchParams.get('text')).toBe('hotel central')
+    expect(requestUrl.searchParams.has('type')).toBe(false)
   })
 })

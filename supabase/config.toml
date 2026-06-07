@@ -1,4 +1,25 @@
 project_id = "cuadros_de_viaje"
 
+[auth]
+site_url = "https://cuadrosdeviaje.vercel.app"
+additional_redirect_urls = [
+  "https://cuadrosdeviaje.vercel.app/dashboard",
+  "http://localhost:5173/",
+  "http://localhost:5173/verify-email",
+  "http://localhost:5173/dashboard",
+]
+
+[auth.email]
+enable_confirmations = true
+max_frequency = "1m0s"
+otp_length = 8
+
+[auth.mfa.totp]
+enroll_enabled = true
+verify_enabled = true
+
+[storage.vector]
+enabled = false
+
 [functions.flight-lookup]
 verify_jwt = true

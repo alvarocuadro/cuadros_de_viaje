@@ -32,6 +32,7 @@ export async function register(
           apellido,
           país,
         },
+        emailRedirectTo: `${window.location.origin}/dashboard`,
       },
     })
 
@@ -55,23 +56,6 @@ export async function register(
       }
     }
 
-    const { error: otpError } = await supabase.auth.signInWithOtp({
-      email,
-      options: {
-        shouldCreateUser: false,
-      },
-    })
-
-    if (otpError && otpError.code !== 'over_email_send_rate_limit') {
-      return {
-        success: false,
-        error: {
-          code: otpError.code || 'otp_error',
-          message: otpError.message,
-        },
-      }
-    }
-
     return { success: true }
   } catch (err) {
     return {
@@ -84,67 +68,13 @@ export async function register(
   }
 }
 
-export async function verifyEmail(email: string, code: string): Promise<AuthResponse> {
+export async function resendSignupConfirmation(email: string): Promise<AuthResponse> {
   try {
-    const { data, error } = await supabase.auth.verifyOtp({
-      email,
-      token: code,
-      type: 'email',
-    })
-
-    if (error) {
-      return {
-        success: false,
-        error: {
-          code: error.code || 'verify_error',
-          message: error.message,
-        },
-      }
-    }
-
-    if (!data.user?.id) {
-      return {
-        success: false,
-        error: {
-          code: 'no_user',
-          message: 'Usuario no encontrado',
-        },
-      }
-    }
-
-    const { error: updateError } = await supabase
-      .from('profiles')
-      .update({ email_verificado: true, updated_at: new Date().toISOString() })
-      .eq('id', data.user.id)
-
-    if (updateError) {
-      return {
-        success: false,
-        error: {
-          code: updateError.code || 'update_error',
-          message: updateError.message,
-        },
-      }
-    }
-
-    return { success: true }
-  } catch (err) {
-    return {
-      success: false,
-      error: {
-        code: 'unknown_error',
-        message: err instanceof Error ? err.message : 'Error desconocido',
-      },
-    }
-  }
-}
-
-export async function resendOtp(email: string): Promise<AuthResponse> {
-  try {
-    const { error } = await supabase.auth.signInWithOtp({
+    const { error } = await supabase.auth.resend({
+      type: 'signup',
       email,
       options: {
-        shouldCreateUser: false,
+        emailRedirectTo: `${window.location.origin}/dashboard`,
       },
     })
 

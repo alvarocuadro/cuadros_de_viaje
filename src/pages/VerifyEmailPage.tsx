@@ -1,15 +1,7 @@
 import { useState } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
-import {
-  Box,
-  Container,
-  TextField,
-  Button,
-  Typography,
-  Alert,
-  CircularProgress,
-} from '@mui/material'
-import { verifyEmail, resendOtp } from '@/services/authService'
+import { Box, Container, Button, Typography, Alert, CircularProgress } from '@mui/material'
+import { resendSignupConfirmation } from '@/services/authService'
 
 interface LocationState {
   email?: string
@@ -20,8 +12,6 @@ export function VerifyEmailPage() {
   const location = useLocation()
   const email = (location.state as LocationState)?.email || ''
 
-  const [code, setCode] = useState('')
-  const [loading, setLoading] = useState(false)
   const [resending, setResending] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [resendSent, setResendSent] = useState(false)
@@ -45,34 +35,14 @@ export function VerifyEmailPage() {
     )
   }
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setError(null)
-
-    if (!code || code.length !== 6) {
-      setError('El código debe tener 6 dígitos')
-      return
-    }
-
-    setLoading(true)
-    const result = await verifyEmail(email, code)
-    setLoading(false)
-
-    if (result.success) {
-      navigate('/dashboard')
-    } else {
-      setError(result.error?.message || 'Código inválido')
-    }
-  }
-
   const handleResend = async () => {
+    setError(null)
     setResending(true)
-    const result = await resendOtp(email)
+    const result = await resendSignupConfirmation(email)
     setResending(false)
 
     if (result.success) {
       setResendSent(true)
-      setCode('')
       setTimeout(() => setResendSent(false), 3000)
     } else {
       setError(result.error?.message || 'Error al reenviar')
@@ -86,44 +56,20 @@ export function VerifyEmailPage() {
           Verificá tu email
         </Typography>
         <Typography variant="body2" color="textSecondary" sx={{ mb: 3 }}>
-          Te enviamos un código de 6 dígitos a <strong>{email}</strong>
+          Te enviamos un enlace de confirmación a <strong>{email}</strong>. Abrilo para
+          terminar el registro.
         </Typography>
 
         {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
-        {resendSent && <Alert severity="success" sx={{ mb: 2 }}>Código reenviado</Alert>}
-
-        <Box component="form" onSubmit={handleSubmit}>
-          <TextField
-            fullWidth
-            label="Código de verificación (6 dígitos)"
-            value={code}
-            onChange={(e) => {
-              const val = e.target.value.replace(/\D/g, '').slice(0, 6)
-              setCode(val)
-            }}
-            inputProps={{ inputMode: 'numeric', maxLength: 6 }}
-            disabled={loading}
-            autoFocus
-            sx={{ mb: 2 }}
-          />
-          <Button
-            fullWidth
-            variant="contained"
-            type="submit"
-            disabled={loading || code.length !== 6}
-            sx={{ mb: 2 }}
-          >
-            {loading ? <CircularProgress size={24} /> : 'Verificar'}
-          </Button>
-        </Box>
+        {resendSent && <Alert severity="success" sx={{ mb: 2 }}>Enlace reenviado</Alert>}
 
         <Button
           fullWidth
-          variant="text"
+          variant="contained"
           onClick={handleResend}
-          disabled={resending || loading}
+          disabled={resending}
         >
-          {resending ? 'Reenviando...' : '¿No recibiste el código? Reenviar'}
+          {resending ? <CircularProgress size={24} /> : '¿No recibiste el email? Reenviar enlace'}
         </Button>
       </Box>
     </Container>
